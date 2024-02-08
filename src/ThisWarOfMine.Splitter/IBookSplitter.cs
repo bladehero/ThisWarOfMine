@@ -6,5 +6,5 @@ namespace ThisWarOfMine.Splitter;
 
 internal interface IBookSplitter
 {
-    IAsyncEnumerable<Story> SplitAsync(Language language, CancellationToken token = default);
+    IAsyncEnumerable<Story> SplitAsync(string path, Language language, CancellationToken token = default);
 }

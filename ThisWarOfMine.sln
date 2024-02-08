@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{2A5057EA-4257-4B9C-9D8C-B22B110E0180}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BB676E28-2C28-4794-A707-2C35A61EEB2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThisWarOfMine.Contracts", "src\ThisWarOfMine.Contracts\ThisWarOfMine.Contracts.csproj", "{DFD8953A-4F33-470E-A099-72FE4597AA30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThisWarOfMine.Splitter", "src\ThisWarOfMine.Splitter\ThisWarOfMine.Splitter.csproj", "{7372F4F3-4798-480E-852B-CDA923278070}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThisWarOfMine.Splitter.UnitTests", "tests\ThisWarOfMine.Splitter.UnitTests\ThisWarOfMine.Splitter.UnitTests.csproj", "{5D92DBB1-93DC-4DA6-AC36-25FE6F35FD14}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DFD8953A-4F33-470E-A099-72FE4597AA30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFD8953A-4F33-470E-A099-72FE4597AA30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFD8953A-4F33-470E-A099-72FE4597AA30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFD8953A-4F33-470E-A099-72FE4597AA30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7372F4F3-4798-480E-852B-CDA923278070}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7372F4F3-4798-480E-852B-CDA923278070}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7372F4F3-4798-480E-852B-CDA923278070}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7372F4F3-4798-480E-852B-CDA923278070}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D92DBB1-93DC-4DA6-AC36-25FE6F35FD14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D92DBB1-93DC-4DA6-AC36-25FE6F35FD14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D92DBB1-93DC-4DA6-AC36-25FE6F35FD14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D92DBB1-93DC-4DA6-AC36-25FE6F35FD14}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DFD8953A-4F33-470E-A099-72FE4597AA30} = {2A5057EA-4257-4B9C-9D8C-B22B110E0180}
+		{7372F4F3-4798-480E-852B-CDA923278070} = {2A5057EA-4257-4B9C-9D8C-B22B110E0180}
+		{5D92DBB1-93DC-4DA6-AC36-25FE6F35FD14} = {BB676E28-2C28-4794-A707-2C35A61EEB2A}
+	EndGlobalSection
+EndGlobal

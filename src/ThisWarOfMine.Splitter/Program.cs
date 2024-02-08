@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ThisWarOfMine.Contracts;
+using ThisWarOfMine.Contracts.Narrative;
 using ThisWarOfMine.Splitter;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -12,7 +13,11 @@ using var host = builder.Build();
 
 await host.StartAsync();
 
-await foreach (var story in host.Services.GetRequiredService<IBookSplitter>().SplitAsync(Language.Russian))
+const string bookFile = "book.txt";
+var list = new List<Story>();
+await foreach (var story in host.Services.GetRequiredService<IBookSplitter>().SplitAsync(bookFile, Language.Russian))
 {
-    Console.WriteLine(story);
+    list.Add(story);
 }
+
+;
