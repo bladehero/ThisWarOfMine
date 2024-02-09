@@ -3,7 +3,7 @@ using ThisWarOfMine.Contracts.Narrative;
 
 namespace ThisWarOfMine.Splitter;
 
-public interface IStoryCreator
+public interface IStoryParser
 {
-    Story Create(Language language, IReadOnlyCollection<string> rows);
+    void ParseIn(Book book, Language language, IReadOnlyCollection<string> rows);
 }

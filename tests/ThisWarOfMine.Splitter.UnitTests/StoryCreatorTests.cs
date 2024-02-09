@@ -2,10 +2,10 @@
 
 internal sealed class StoryCreatorTests
 {
-    private readonly StoryCreator _sut;
+    private readonly StoryParser _sut;
 
     public StoryCreatorTests()
     {
-        _sut = new StoryCreator();
+        _sut = new StoryParser();
     }
 }

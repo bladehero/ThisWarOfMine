@@ -1,7 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using ThisWarOfMine.Contracts;
-using ThisWarOfMine.Contracts.Narrative;
 
 namespace ThisWarOfMine.Splitter;
 
@@ -11,13 +9,8 @@ internal sealed partial class BookSplitter : IBookSplitter
     private const int BufferSize = 1024;
     private static readonly Regex OnlyNumberRule = GetNumberOnlyRegex();
 
-    private readonly IStoryCreator _storyCreator;
-
-    public BookSplitter(IStoryCreator storyCreator) => _storyCreator = storyCreator;
-
-    public async IAsyncEnumerable<Story> SplitAsync(
+    public async IAsyncEnumerable<IReadOnlyCollection<string>> SplitAsync(
         string path,
-        Language language,
         [EnumeratorCancellation] CancellationToken token = default
     )
     {
@@ -27,7 +20,7 @@ internal sealed partial class BookSplitter : IBookSplitter
         var rows = new List<string?>(RegularStoryTextRowsCount);
         while (!token.IsCancellationRequested)
         {
-            var line = await reader.ReadLineAsync(token);
+            var line = (await reader.ReadLineAsync(token))?.Trim();
 
             rows.Add(line);
 
@@ -43,7 +36,7 @@ internal sealed partial class BookSplitter : IBookSplitter
 
             // TODO: Refactor (maybe remove RemoveAt method if possible)
             rows.RemoveAt(rows.Count - 1);
-            yield return _storyCreator.Create(language, rows!);
+            yield return rows.ToArray()!;
             rows.Clear();
             rows.Add(line);
 

@@ -1,27 +1,43 @@
-﻿namespace ThisWarOfMine.Contracts.Narrative;
+﻿using CSharpFunctionalExtensions;
+
+namespace ThisWarOfMine.Contracts.Narrative;
 
 public sealed class Story
 {
-    private readonly List<Alternative> _alternatives = new();
+    private readonly List<Translation> _translations = new();
 
-    public int Number { get; init; }
-    public IReadOnlyCollection<Alternative> Alternatives => _alternatives.AsReadOnly();
-    public IReadOnlyCollection<Option> Options { get; set; } = new List<Option>();
+    public int Number { get; private init; }
+    public IReadOnlyCollection<Translation> Translations => _translations.AsReadOnly();
 
-    private Story() { }
+    public Alternative Original =>
+        _translations.TryFirst(x => x.Original.HasValue).Value.Original
+            .GetValueOrThrow("Cannot get original source as it's not been initialized yet");
 
-    public static Story Create(int number, Language language, IEnumerable<string> rows) =>
-        new()
+    public Book Book { get; private init; }
+
+    private Story(Book book) => Book = book;
+
+    public Translation TranslateTo(Language language)
+    {
+        return _translations.TryFirst(x => x.Language == language).GetValueOrDefault(UseExisting, OrCreateNew);
+
+        Translation UseExisting(Translation translation) => translation;
+
+        Translation OrCreateNew()
         {
-            Number = number,
-            _alternatives =
-            {
-                new Alternative
-                {
-                    Language = language,
-                    IsOriginal = true,
-                    Text = string.Join(Environment.NewLine, rows)
-                }
-            }
-        };
+            var translation = Translation.Create(this, language);
+            _translations.Add(translation);
+            return translation;
+        }
+    }
+
+    internal static Story Create(Book book, int number)
+    {
+        if (number <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(number));
+        }
+
+        return new Story(book) { Number = number };
+    }
 }

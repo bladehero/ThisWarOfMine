@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Execution;
-using ThisWarOfMine.Contracts;
 
 namespace ThisWarOfMine.Splitter.UnitTests.Acceptance;
 
@@ -18,11 +17,11 @@ public sealed class BookSplitterTests
 
     public BookSplitterTests()
     {
-        _sut = new BookSplitter(new StoryCreator());
+        _sut = new BookSplitter();
     }
 
     [Fact]
-    public async Task SplitAsync_WhenBookWith1947StoriesProvided_ShouldParseAllOfThemInCorrectOrder()
+    public async Task SplitAsync_WhenBookWith1923StoriesProvided_ShouldParseAllOfThemInCorrectOrder()
     {
         // Arrange
         const int expectedCount = 1923;
@@ -31,14 +30,16 @@ public sealed class BookSplitterTests
 
 
         // Act
-        var actual = await _sut.SplitAsync(path, Language.Russian).ToListAsync();
+        var actual = await _sut.SplitAsync(path).ToListAsync();
 
         // Assert
         using (new AssertionScope())
         {
             actual.Should().HaveCount(expectedCount);
-            actual.Should().BeInAscendingOrder(x => x.Number);
-            expectedNumbers.Except(actual.Select(x => x.Number)).Should().BeEmpty();
+
+            var actualNumbers = actual.Select(x => int.Parse(x.First())).ToArray();
+            actualNumbers.Should().BeInAscendingOrder();
+            expectedNumbers.Except(actualNumbers).Should().BeEmpty();
         }
     }
 }

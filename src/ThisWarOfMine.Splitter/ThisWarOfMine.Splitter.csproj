@@ -8,13 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="book.txt" />
-      <Content Include="book.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\ThisWarOfMine.Contracts\ThisWarOfMine.Contracts.csproj" />
     </ItemGroup>
 
@@ -28,6 +21,16 @@
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
             <_Parameter1>ThisWarOfMine.Splitter.UnitTests</_Parameter1>
         </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="book.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="book.txt" />
+      <Content Include="book.txt">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

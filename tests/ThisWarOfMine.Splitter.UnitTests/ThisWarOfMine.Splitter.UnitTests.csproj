@@ -35,6 +35,9 @@
 
     <ItemGroup>
       <None Remove="Acceptance\Content\book.txt" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Content Include="Acceptance\Content\book.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
