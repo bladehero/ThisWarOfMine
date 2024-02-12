@@ -1,12 +1,18 @@
 ﻿using CSharpFunctionalExtensions;
 using ThisWarOfMine.Contracts;
 using ThisWarOfMine.Contracts.Narrative;
+using ThisWarOfMine.Splitter.Options;
 
 namespace ThisWarOfMine.Splitter;
 
 internal sealed class StoryParser : IStoryParser
 {
-    private const char OptionMarker = '?';
+    private readonly IOptionParser _optionParser;
+
+    public StoryParser(IOptionParser optionParser)
+    {
+        _optionParser = optionParser;
+    }
 
     public void ParseIn(Book book, Language language, IReadOnlyCollection<string> rows)
     {
@@ -37,15 +43,7 @@ internal sealed class StoryParser : IStoryParser
 
         foreach (var optionRow in optionRows)
         {
-            // TODO: extract to specific strategies
-            if (optionRow.StartsWith(OptionMarker))
-            {
-                alternative.Options.AppendWithText(optionRow);
-            }
-            else
-            {
-                alternative.Options.Note(optionRow);
-            }
+            _optionParser.ParseIn(alternative.Options, optionRow);
         }
     }
 
@@ -57,7 +55,7 @@ internal sealed class StoryParser : IStoryParser
         var index = 0;
         while (index < body.Count)
         {
-            if (body[index].StartsWith(OptionMarker))
+            if (body[index].StartsWith(Constants.OptionMarker))
             {
                 return index;
             }

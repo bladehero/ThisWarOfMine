@@ -1,32 +1,56 @@
-﻿namespace ThisWarOfMine.Contracts.Narrative.Options;
+﻿using System.Collections;
 
-public sealed class OptionGroup
+namespace ThisWarOfMine.Contracts.Narrative.Options;
+
+public sealed class OptionGroup : IReadOnlyCollection<Option>
 {
-    private readonly List<string> _remarks = new();
     private readonly List<Option> _options = new();
 
     public Alternative Alternative { get; private init; }
-    public IReadOnlyCollection<string> Remarks => _remarks.AsReadOnly();
-    public IReadOnlyCollection<Option> Options => _options.AsReadOnly();
+    public int Count => _options.Count;
+    public bool HasRemarks => _options.OfType<RemarkOption>().Any();
 
     private OptionGroup(Alternative alternative) => Alternative = alternative;
 
-    public OptionGroup Note(string remark)
+    public Option Note(string remark)
     {
-        _remarks.Add(remark);
-        return this;
+        var remarkOption = RemarkOption.Create(this, remark);
+        _options.Add(remarkOption);
+        return remarkOption;
     }
 
-    public OptionGroup WithOnlyBackToGame()
+    public Option WithOnlyBackToGame()
     {
-        ThrowIfOptionsNotEmpty();
+        ThrowIfBackToGameExists();
 
         var option = BackToGameOption.Create(this);
         _options.Add(option);
-        return this;
+        return option;
     }
 
-    public OptionGroup AppendWithText(string text)
+    public Option AppendWithText(string text, bool withBackToGame)
+    {
+        ThrowIfBackToGameExists();
+
+        var option = GetTextOption();
+        _options.Add(option);
+        return option;
+
+        Option GetTextOption()
+        {
+            var simpleOption = SimpleOption.Create(this, text);
+            if (!withBackToGame)
+            {
+                return simpleOption;
+            }
+
+            var backToGameOption = BackToGameOption.Create(this);
+            var complexOption = ComplexOption.Create(this, simpleOption, backToGameOption);
+            return complexOption;
+        }
+    }
+
+    public Option AppendWithTextAndBackToGame(string text)
     {
         ThrowIfBackToGameExists();
 
@@ -34,40 +58,36 @@ public sealed class OptionGroup
         var backToGameOption = BackToGameOption.Create(this);
         var complexOption = ComplexOption.Create(this, simpleOption, backToGameOption);
         _options.Add(complexOption);
-        return this;
+        return complexOption;
     }
 
-    public OptionGroup AppendWithRedirection(int storyNumber)
+    public Option AppendWithRedirection(int storyNumber, string? text = null, string? appendix = null)
     {
         ThrowIfBackToGameExists();
 
-        var redirectOption = RedirectOption.Create(this, storyNumber);
+        Option redirectOption = RedirectOption.Create(this, storyNumber);
+
+        if (!string.IsNullOrWhiteSpace(text))
+        {
+            var textOption = SimpleOption.Create(this, text);
+            redirectOption = redirectOption.Prepend(textOption);
+        }
+
+        if (!string.IsNullOrWhiteSpace(appendix))
+        {
+            var appendixOption = SimpleOption.Create(this, appendix);
+            redirectOption = redirectOption.Append(appendixOption);
+        }
+
         _options.Add(redirectOption);
-        return this;
-    }
-
-    public OptionGroup AppendWithRedirection(string text, int storyNumber)
-    {
-        ThrowIfBackToGameExists();
-
-        var simpleOption = SimpleOption.Create(this, text);
-        var redirectOption = RedirectOption.Create(this, storyNumber);
-        var complexOption = ComplexOption.Create(this, simpleOption, redirectOption);
-        _options.Add(complexOption);
-        return this;
+        return redirectOption;
     }
 
     public static OptionGroup Empty(Alternative alternative) => new(alternative);
-    
-    private void ThrowIfOptionsNotEmpty()
-    {
-        if (_options.Any())
-        {
-            throw new InvalidOperationException(
-                "Cannot use back to game option if there are already other options defined"
-            );
-        }
-    }
+
+    public IEnumerator<Option> GetEnumerator() => _options.GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
     private void ThrowIfBackToGameExists()
     {

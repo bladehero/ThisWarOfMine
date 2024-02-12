@@ -9,6 +9,8 @@ public sealed class Book
 
     private Maybe<Story> _maybeCurrentStory;
 
+    public IReadOnlyCollection<Story> Stories => _stories.AsReadOnly();
+
     private Book(int capacity) => _stories = new List<Story>(capacity);
 
     public Story NewStory(int number)
@@ -24,7 +26,7 @@ public sealed class Book
         {
             if (currentStory.Number >= number)
             {
-                throw new InvalidOperationException("");
+                throw new InvalidOperationException("New story should have always higher number than the last one");
             }
         }
 
