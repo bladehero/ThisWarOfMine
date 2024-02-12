@@ -14,6 +14,7 @@ builder
     .AddScoped<IOptionParser, OptionParser>()
     .AddScoped<IOptionParsingStrategy, OnlyBackToGameOptionParsingStrategy>()
     .AddScoped<IOptionParsingStrategy, RemarkOptionParsingStrategy>()
+    .AddScoped<IOptionParsingStrategy, BackToStoryOptionParsingStrategy>()
     .AddScoped<IOptionParsingStrategy, RedirectOptionParsingStrategy>()
     .AddScoped<IOptionParsingStrategy, TextOptionParsingStrategy>();
 using var host = builder.Build();
@@ -23,5 +24,5 @@ await host.StartAsync();
 const string bookFile = "book.txt";
 
 var bookCreator = host.Services.GetRequiredService<IBookCreator>();
-var book = bookCreator.CreateAsync(bookFile, Language.Russian);
+var book = await bookCreator.CreateAsync(bookFile, Language.Russian);
 ;
