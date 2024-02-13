@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ThisWarOfMine.Contracts;
+using ThisWarOfMine.Domain;
 using ThisWarOfMine.Splitter;
 using ThisWarOfMine.Splitter.Options;
 using OptionParser = ThisWarOfMine.Splitter.Options.OptionParser;

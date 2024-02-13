@@ -1,6 +1,6 @@
-﻿using ThisWarOfMine.Contracts.Narrative.Options;
+﻿using ThisWarOfMine.Domain.Narrative.Options;
 
-namespace ThisWarOfMine.Contracts.Narrative;
+namespace ThisWarOfMine.Domain.Narrative;
 
 public sealed class Alternative
 {

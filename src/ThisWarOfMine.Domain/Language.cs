@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using Ardalis.SmartEnum;
 
-namespace ThisWarOfMine.Contracts;
+namespace ThisWarOfMine.Domain;
 
 public sealed class Language : SmartEnum<Language>
 {

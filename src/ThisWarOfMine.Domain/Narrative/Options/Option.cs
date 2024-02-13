@@ -1,4 +1,4 @@
-﻿namespace ThisWarOfMine.Contracts.Narrative.Options;
+﻿namespace ThisWarOfMine.Domain.Narrative.Options;
 
 public abstract class Option
 {

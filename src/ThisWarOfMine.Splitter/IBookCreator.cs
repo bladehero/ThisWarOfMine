@@ -1,5 +1,5 @@
-﻿using ThisWarOfMine.Contracts;
-using ThisWarOfMine.Contracts.Narrative;
+﻿using ThisWarOfMine.Domain;
+using ThisWarOfMine.Domain.Narrative;
 
 namespace ThisWarOfMine.Splitter;
 

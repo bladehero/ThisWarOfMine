@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 
-namespace ThisWarOfMine.Contracts.Narrative.Options;
+namespace ThisWarOfMine.Domain.Narrative.Options;
 
 public sealed class RedirectOption : Option
 {

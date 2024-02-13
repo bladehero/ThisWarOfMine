@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace ThisWarOfMine.Contracts.Narrative;
+namespace ThisWarOfMine.Domain.Narrative;
 
 public sealed class Translation
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace ThisWarOfMine.Contracts.Narrative.Options;
+namespace ThisWarOfMine.Domain.Narrative.Options;
 
 public sealed class OptionGroup : IReadOnlyCollection<Option>
 {

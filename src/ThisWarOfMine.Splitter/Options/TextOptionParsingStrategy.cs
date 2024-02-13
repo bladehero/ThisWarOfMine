@@ -1,5 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using ThisWarOfMine.Contracts.Narrative.Options;
+using ThisWarOfMine.Domain.Narrative.Options;
 
 namespace ThisWarOfMine.Splitter.Options;
 

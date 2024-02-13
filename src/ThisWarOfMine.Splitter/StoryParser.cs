@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
-using ThisWarOfMine.Contracts;
-using ThisWarOfMine.Contracts.Narrative;
+using ThisWarOfMine.Domain;
+using ThisWarOfMine.Domain.Narrative;
 using ThisWarOfMine.Splitter.Options;
 
 namespace ThisWarOfMine.Splitter;
