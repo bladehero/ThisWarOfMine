@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
-using ThisWarOfMine.Domain.Narrative.Options;
+using CSharpFunctionalExtensions;
+using ThisWarOfMine.Domain.Narrative.Events.Options;
 
 namespace ThisWarOfMine.Splitter.Options;
 
@@ -7,15 +8,14 @@ internal sealed partial class OnlyBackToGameOptionParsingStrategy : IOptionParsi
 {
     private static readonly Regex OnlyBackToGameRule = GetOnlyBackToGameRegex();
 
-    public bool TryParseIn(OptionGroup optionGroup, string optionRow)
+    public Maybe<IOptionData> TryParse(string optionRow)
     {
         if (!OnlyBackToGameRule.IsMatch(optionRow))
         {
-            return false;
+            return Maybe.None;
         }
 
-        optionGroup.WithOnlyBackToGame();
-        return true;
+        return new BackToGameOptionData();
     }
 
     [GeneratedRegex($"^\\s*\\?\\s*({Constants.BackToGameMarker})\\s*\\.?\\s*$")]

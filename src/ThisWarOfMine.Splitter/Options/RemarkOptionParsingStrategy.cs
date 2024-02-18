@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
-using ThisWarOfMine.Domain.Narrative.Options;
+using CSharpFunctionalExtensions;
+using ThisWarOfMine.Domain.Narrative.Events.Options;
 
 namespace ThisWarOfMine.Splitter.Options;
 
@@ -7,15 +8,14 @@ internal sealed partial class RemarkOptionParsingStrategy : IOptionParsingStrate
 {
     private static readonly Regex StartFromQuestionMarkRule = GetStartFromQuestionMarkRegex();
 
-    public bool TryParseIn(OptionGroup optionGroup, string optionRow)
+    public Maybe<IOptionData> TryParse(string optionRow)
     {
         if (StartFromQuestionMarkRule.IsMatch(optionRow))
         {
-            return false;
+            return Maybe.None;
         }
 
-        optionGroup.Note(optionRow);
-        return true;
+        return new RemarkOptionData(optionRow);
     }
 
     [GeneratedRegex("^\\s*\\?\\s*")]

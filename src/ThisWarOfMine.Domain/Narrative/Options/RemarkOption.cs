@@ -8,7 +8,7 @@ internal sealed class RemarkOption : Option
     public override bool IsRedirecting => false;
     public override bool IsSelectable => false;
 
-    public static RemarkOption Create(OptionGroup group, string text)
+    internal static RemarkOption Create(OptionGroup group, string text)
     {
         return new RemarkOption(group, text);
     }

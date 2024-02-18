@@ -1,12 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
+using ThisWarOfMine.Domain.Abstraction;
+using ThisWarOfMine.Domain.Narrative.Events;
 
 namespace ThisWarOfMine.Domain.Narrative;
 
-public sealed class Story
+public sealed class Story : Abstraction.Entity<StoryNumber>
 {
     private readonly List<Translation> _translations = new();
 
-    public int Number { get; private init; }
+    public StoryNumber Number => Id;
     public IReadOnlyCollection<Translation> Translations => _translations.AsReadOnly();
 
     public Alternative Original =>
@@ -15,29 +17,49 @@ public sealed class Story
 
     public Book Book { get; private init; }
 
-    private Story(Book book) => Book = book;
-
-    public Translation TranslateTo(Language language)
+    private Story(Book book)
     {
-        return _translations.TryFirst(x => x.Language == language).GetValueOrDefault(UseExisting, OrCreateNew);
+        Book = book;
+        
+        Register<StoryTranslationAddedToBookEvent>(Apply);
+    }
 
-        Translation UseExisting(Translation translation) => translation;
+    public Result<Translation, Error> TranslationBy(Language language) => _translations.TryFirst(x => x.HasSame(language))
+        .ToResult(Error.Because($"Not defined translation with a language: `{language}` for story: {Number}"));
 
-        Translation OrCreateNew()
+    public bool HasTranslationTo(Language language) => _translations.Any(x => x.Language == language);
+
+    internal static Result<Story, Error> Create(Book book, short number)
+    {
+        return Result.SuccessIf(
+            NumberIsHigherThanZero,
+            NewStory(),
+            Error.Because($"Story number should be always higher than zero but found: `{number}`")
+        );
+
+        bool NumberIsHigherThanZero() => number > 0;
+
+        Story NewStory()
         {
-            var translation = Translation.Create(this, language);
-            _translations.Add(translation);
-            return translation;
+            StoryNumber storyNumber = number;
+            var story = new Story(book) { Id = storyNumber };
+            storyNumber.Assign(story);
+            return story;
         }
     }
 
-    internal static Story Create(Book book, int number)
-    {
-        if (number <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(number));
-        }
+    #region Event Handling
 
-        return new Story(book) { Number = number };
+    private void Apply(StoryTranslationAddedToBookEvent @event)
+    {
+        if (HasTranslationTo(@event.Language))
+        {
+            return;
+        }
+        
+        var translation = Translation.Create(this, @event.Language);
+        _translations.Add(translation);
     }
+
+    #endregion
 }

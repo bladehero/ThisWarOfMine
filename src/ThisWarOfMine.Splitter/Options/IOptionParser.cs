@@ -1,8 +1,9 @@
-﻿using ThisWarOfMine.Domain.Narrative.Options;
+﻿using CSharpFunctionalExtensions;
+using ThisWarOfMine.Domain.Narrative.Events.Options;
 
 namespace ThisWarOfMine.Splitter.Options;
 
 internal interface IOptionParser
 {
-    void ParseIn(OptionGroup group, string optionRow);
+    Result<IOptionData> Parse(string optionRow);
 }

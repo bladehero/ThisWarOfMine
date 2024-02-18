@@ -12,14 +12,14 @@ public sealed class OptionGroup : IReadOnlyCollection<Option>
 
     private OptionGroup(Alternative alternative) => Alternative = alternative;
 
-    public Option Note(string remark)
+    internal Option Note(string remark)
     {
         var remarkOption = RemarkOption.Create(this, remark);
         _options.Add(remarkOption);
         return remarkOption;
     }
 
-    public Option WithOnlyBackToGame()
+    internal Option WithOnlyBackToGame()
     {
         ThrowIfBackToGameExists();
 
@@ -28,7 +28,7 @@ public sealed class OptionGroup : IReadOnlyCollection<Option>
         return option;
     }
 
-    public Option AppendWithText(string text, bool withBackToGame)
+    internal Option AppendWithText(string text, bool withBackToGame)
     {
         ThrowIfBackToGameExists();
 
@@ -50,18 +50,7 @@ public sealed class OptionGroup : IReadOnlyCollection<Option>
         }
     }
 
-    public Option AppendWithTextAndBackToGame(string text)
-    {
-        ThrowIfBackToGameExists();
-
-        var simpleOption = SimpleOption.Create(this, text);
-        var backToGameOption = BackToGameOption.Create(this);
-        var complexOption = ComplexOption.Create(this, simpleOption, backToGameOption);
-        _options.Add(complexOption);
-        return complexOption;
-    }
-
-    public Option AppendWithRedirection(int storyNumber, string? text = null, string? appendix = null)
+    internal Option AppendWithRedirection(string? text, int storyNumber, string? appendix)
     {
         ThrowIfBackToGameExists();
 
@@ -83,7 +72,7 @@ public sealed class OptionGroup : IReadOnlyCollection<Option>
         return redirectOption;
     }
 
-    public static OptionGroup Empty(Alternative alternative) => new(alternative);
+    internal static OptionGroup Empty(Alternative alternative) => new(alternative);
 
     public IEnumerator<Option> GetEnumerator() => _options.GetEnumerator();
 

@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
-using ThisWarOfMine.Domain.Narrative.Options;
+using CSharpFunctionalExtensions;
+using ThisWarOfMine.Domain.Narrative.Events.Options;
 
 namespace ThisWarOfMine.Splitter.Options;
 
@@ -10,17 +11,16 @@ internal sealed partial class BackToStoryOptionParsingStrategy : IOptionParsingS
     private const string ToMarker = "К";
     private static readonly Regex BackToStoryRule = GetBackToStoryRegex();
 
-    public bool TryParseIn(OptionGroup optionGroup, string optionRow)
+    public Maybe<IOptionData> TryParse(string optionRow)
     {
         var match = BackToStoryRule.Match(optionRow);
         if (!match.Success)
         {
-            return false;
+            return Maybe.None;
         }
 
         var number = int.Parse(match.Groups[Number].Value);
-        optionGroup.AppendWithRedirection(number);
-        return true;
+        return new RedirectionOptionData(number);
     }
 
     [GeneratedRegex($"^\\s*\\?\\s*({BackMarker})\\s+({ToMarker})\\s+(?<{Number}>\\d+)\\s*\\.?\\s*$")]

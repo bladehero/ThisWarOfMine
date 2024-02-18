@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using ThisWarOfMine.Domain;
 using ThisWarOfMine.Domain.Narrative;
 using ThisWarOfMine.Splitter.Options;
 
@@ -14,41 +13,80 @@ internal sealed class StoryParser : IStoryParser
         _optionParser = optionParser;
     }
 
-    public void ParseIn(Book book, Language language, IReadOnlyCollection<string> rows)
+    public Result<Story> ParseIn(Book book, Language language, IReadOnlyCollection<string> rows)
     {
-        var title = rows.First();
-        var number = TryParseAsNumber(title);
-        if (number.HasNoValue)
-        {
-            throw new InvalidOperationException($"Cannot parse title as number: {title}");
-        }
-
-        var translation = book.NewStory(number.Value).TranslateTo(language);
-
         var body = rows.Skip(1).ToArray();
         var indexOfFirstOption = IndexOfFirstOption(body);
-        var contentRows = body[..indexOfFirstOption];
-        if (!contentRows.Any())
+
+        return rows
+            .TryFirst()
+            .ToResult("Rows are empty")
+            .Bind(ParsingStoryNumber)
+            .Bind(AddingNewStory)
+            .Bind(TranslatingStory)
+            .Bind(WritingStory)
+            .Bind(DefiningOptions);
+
+        Result<short> AddingNewStory(short number)
         {
-            throw new InvalidOperationException("Content of the story should be always present");
+            return book.AddStory(number).Map(_ => number).MapError(x => x.Message);
         }
 
-        var optionRows = body[indexOfFirstOption..];
-        if (!optionRows.Any())
+        Result<short> TranslatingStory(short number)
         {
-            throw new InvalidOperationException("The story should have at least one option");
+            return book.TranslateStory(number, language).Map(_ => number).MapError(x => x.Message);
         }
 
-        var alternative = translation.Retell(string.Join(Environment.NewLine, contentRows));
-
-        foreach (var optionRow in optionRows)
+        Result<(short StoryNumber, Guid AlternativeId)> WritingStory(short number)
         {
-            _optionParser.ParseIn(alternative.Options, optionRow);
+            var contentRows = body[..indexOfFirstOption];
+
+            return Result
+                .SuccessIf(contentRows.Any, "Content of the story should be always present")
+                .Bind(AddingNewAlternative)
+                .Map(alternative => (number, alternative.Id));
+
+            Result<Alternative> AddingNewAlternative()
+            {
+                return book
+                    .AddTranslationAlternative(number, language, string.Join(Environment.NewLine, contentRows))
+                    .MapError(x => x.Message);
+            }
+        }
+
+        Result<Story> DefiningOptions((short Number, Guid AlternativeId) data)
+        {
+            var (number, alternativeId) = data;
+            var optionRows = body[indexOfFirstOption..];
+            if (!optionRows.Any())
+            {
+                throw new InvalidOperationException("The story should have at least one option");
+            }
+
+            foreach (var optionRow in optionRows)
+            {
+                var result = _optionParser.Parse(optionRow)
+                    .Bind(optionData => 
+                        book
+                            .AddAlternativeOption(number, language, alternativeId, optionData)
+                            .MapError(x => x.Message));
+
+                if (result.IsFailure)
+                {
+                    return Result.Failure<Story>(result.Error);
+                }
+            }
+
+            return book.StoryBy(number).MapError(x => x.Message);
         }
     }
 
-    private static Maybe<int> TryParseAsNumber(string source) =>
-        int.TryParse(source, out var number) ? number : Maybe.None;
+    private static Result<short> ParsingStoryNumber(string source) =>
+        Result
+            .SuccessIf(
+                short.TryParse(source, out var number),
+                number,
+                $"Cannot parse title as number: {source}");
 
     private static int IndexOfFirstOption(IReadOnlyList<string> body)
     {

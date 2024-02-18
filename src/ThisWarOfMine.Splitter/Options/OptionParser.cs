@@ -1,4 +1,5 @@
-﻿using ThisWarOfMine.Domain.Narrative.Options;
+﻿using CSharpFunctionalExtensions;
+using ThisWarOfMine.Domain.Narrative.Events.Options;
 
 namespace ThisWarOfMine.Splitter.Options;
 
@@ -11,16 +12,17 @@ internal sealed class OptionParser : IOptionParser
         _strategies = strategies;
     }
 
-    public void ParseIn(OptionGroup group, string optionRow)
+    public Result<IOptionData> Parse(string optionRow)
     {
         foreach (var strategy in _strategies)
         {
-            if (strategy.TryParseIn(group, optionRow))
+            var option = strategy.TryParse(optionRow);
+            if (option.HasValue)
             {
-                return;
+                return Result.Success(option.Value);
             }
         }
 
-        throw new InvalidOperationException($"Cannot find suitable parsing strategy for option: `{optionRow}`");
+        return Result.Failure<IOptionData>($"Cannot find suitable parsing strategy for option: `{optionRow}`");
     }
 }

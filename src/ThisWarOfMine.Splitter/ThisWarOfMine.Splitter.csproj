@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ThisWarOfMine.Common\ThisWarOfMine.Common.csproj" />
       <ProjectReference Include="..\ThisWarOfMine.Domain\ThisWarOfMine.Domain.csproj" />
     </ItemGroup>
 

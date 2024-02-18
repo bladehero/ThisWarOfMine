@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
-using ThisWarOfMine.Domain.Narrative.Options;
+using ThisWarOfMine.Domain.Narrative.Events.Options;
 
 namespace ThisWarOfMine.Splitter.Options;
 
@@ -13,20 +13,18 @@ internal sealed partial class RedirectOptionParsingStrategy : IOptionParsingStra
 
     private static readonly Regex RedirectionRule = GetRedirectionRegex();
 
-    public bool TryParseIn(OptionGroup optionGroup, string optionRow)
+    public Maybe<IOptionData> TryParse(string optionRow)
     {
         var match = RedirectionRule.Match(optionRow);
         if (!match.Success)
         {
-            return false;
+            return Maybe.None;
         }
 
         var number = match.Groups.TryFind(Number).Map(AsInteger).GetValueOrThrow(RedirectionNumberMandatoryError);
         var prepending = match.Groups.TryFind(Prepending).Map(AsString).GetValueOrDefault();
         var appending = match.Groups.TryFind(Appending).Map(AsString).GetValueOrDefault();
-
-        optionGroup.AppendWithRedirection(number, prepending, appending);
-        return true;
+        return new RedirectionOptionData(number, prepending, appending);
 
         int AsInteger(Capture group) => int.Parse(group.Value);
 

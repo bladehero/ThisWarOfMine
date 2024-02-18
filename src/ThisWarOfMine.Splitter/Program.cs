@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ThisWarOfMine.Domain;
+using ThisWarOfMine.Domain.Narrative;
 using ThisWarOfMine.Splitter;
 using ThisWarOfMine.Splitter.Options;
 using OptionParser = ThisWarOfMine.Splitter.Options.OptionParser;
@@ -24,5 +24,5 @@ await host.StartAsync();
 const string bookFile = "book.txt";
 
 var bookCreator = host.Services.GetRequiredService<IBookCreator>();
-var book = await bookCreator.CreateAsync(bookFile, Language.Russian);
+var book = await bookCreator.CreateAsync("Book of Scripts", bookFile, Language.Russian);
 ;

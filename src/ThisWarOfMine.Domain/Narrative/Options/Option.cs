@@ -11,6 +11,6 @@ public abstract class Option
 
     protected Option(OptionGroup group) => Group = group;
 
-    public Option Append(Option option) => ComplexOption.Create(Group, this, option);
-    public Option Prepend(Option option) => ComplexOption.Create(Group, option, this);
+    internal Option Append(Option option) => ComplexOption.Create(Group, this, option);
+    internal Option Prepend(Option option) => ComplexOption.Create(Group, option, this);
 }
