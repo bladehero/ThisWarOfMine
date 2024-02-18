@@ -17,7 +17,7 @@ internal sealed class BookCreator : IBookCreator
 
     public ValueTask<Book> CreateAsync(string name, string path, Language language, CancellationToken token = default)
     {
-        return Book.Create(name)
+        return Book.Create(Guid.NewGuid(), name)
             .Tap(async book =>
             {
                 await foreach (var rows in _bookSplitter.SplitAsync(path, token))

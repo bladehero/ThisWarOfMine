@@ -61,12 +61,17 @@ public sealed class Book : AggregateRoot<Guid>
             .Map(() => this);
     }
 
-    public Result<Alternative, Error> AddTranslationAlternative(StoryNumber number, Language language, string text)
+    public Result<Alternative, Error> AddTranslationAlternative(
+        StoryNumber number,
+        Language language,
+        Guid guid,
+        string text
+    )
     {
         return StoryBy(number)
             .Bind(story =>
                 ApplyChange<TranslationAlternativeAddedToBookEvent, Alternative>(
-                    new TranslationAlternativeAddedToBookEvent(Id, story.Number, language, text)
+                    new TranslationAlternativeAddedToBookEvent(Id, story.Number, language, guid, text)
                 )
             );
     }
@@ -86,11 +91,11 @@ public sealed class Book : AggregateRoot<Guid>
 
     #endregion
 
-    public static Result<Book, Error> Create(string name, int capacity = DefaultBookCapacity)
+    public static Result<Book, Error> Create(Guid guid, string name, int capacity = DefaultBookCapacity)
     {
         return Result
             .FailureIf(NameIsNull, new Book(capacity), Error.Because("Name of book should be always filled"))
-            .Tap(book => book.ApplyChange(new BookCreatedEvent(Guid.NewGuid(), name)));
+            .Tap(book => book.ApplyChange(new BookCreatedEvent(guid, name)));
 
         bool NameIsNull() => string.IsNullOrWhiteSpace(name);
     }
@@ -120,7 +125,7 @@ public sealed class Book : AggregateRoot<Guid>
 
     private Result<Alternative, Error> Apply(TranslationAlternativeAddedToBookEvent @event)
     {
-        var (_, storyNumber, language, _) = @event;
+        var (_, storyNumber, language, _, _) = @event;
         return StoryBy(storyNumber)
             .Bind(story => story.TranslationBy(language))
             .Bind(translation => translation.Route<TranslationAlternativeAddedToBookEvent, Alternative>(@event));

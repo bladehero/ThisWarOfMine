@@ -19,7 +19,7 @@ public sealed class Alternative : Abstraction.Entity<Guid>
         Register<AlternativeOptionAddedToBookEvent>(Apply);
     }
 
-    internal static Result<Alternative, Error> Create(Translation translation, string text)
+    internal static Result<Alternative, Error> Create(Translation translation, Guid guid, string text)
     {
         return Result.FailureIf(
             string.IsNullOrWhiteSpace(text),
@@ -31,7 +31,7 @@ public sealed class Alternative : Abstraction.Entity<Guid>
         {
             var alternative = new Alternative(translation)
             {
-                Id = Guid.NewGuid(),
+                Id = guid,
                 Text = text,
                 IsOriginal = IfTheVeryFirstAlternative(translation)
             };

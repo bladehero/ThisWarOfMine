@@ -33,7 +33,10 @@ public sealed class Translation : Abstraction.Entity<Language>
 
     private Result<Alternative, Error> Apply(TranslationAlternativeAddedToBookEvent @event)
     {
-        return Alternative.Create(this, @event.Text).Tap(alternative => _alternatives.Add(alternative));
+        return
+            Alternative
+                .Create(this, @event.AlternativeId, @event.Text)
+                .Tap(alternative => _alternatives.Add(alternative));
     }
 
     #endregion

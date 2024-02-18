@@ -47,7 +47,12 @@ internal sealed class StoryParser : IStoryParser
 
             Result<Alternative> AddingNewAlternative()
             {
-                return book.AddTranslationAlternative(number, language, string.Join(Environment.NewLine, contentRows))
+                return book.AddTranslationAlternative(
+                        number,
+                        language,
+                        Guid.NewGuid(),
+                        string.Join(Environment.NewLine, contentRows)
+                    )
                     .MapError(x => x.Message);
             }
         }
