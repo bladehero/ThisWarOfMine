@@ -13,11 +13,11 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="CSharpier.MsBuild" Version="0.27.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
       <PackageReference Include="CSharpFunctionalExtensions" Version="2.40.3" />
-      <PackageReference Include="CSharpier.MsBuild" Version="0.27.2">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
       <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     </ItemGroup>
@@ -38,7 +38,6 @@
       </Content>
     </ItemGroup>
 
-    <!-- set HUSKY to 0 in CI/CD disable this -->
     <Target Name="husky" BeforeTargets="Restore;CollectPackageReferences;Build" Condition="'$(Configuration)' == 'Debug'">
         <Exec Command="dotnet tool restore" StandardOutputImportance="Low" StandardErrorImportance="High" />
         <Exec Command="dotnet husky install" StandardOutputImportance="Low" StandardErrorImportance="High" WorkingDirectory="../../" />
