@@ -8,11 +8,11 @@ internal sealed class ComplexOption : Option
     public override string Text => $"{Current.Text} ► {Next.Text}";
     public override bool IsRedirecting => Current.IsRedirecting || Next.IsRedirecting;
 
-    private ComplexOption(OptionGroup group, Option current, Option next) : base(group)
+    private ComplexOption(OptionGroup group, Option current, Option next)
+        : base(group)
     {
         Current = current;
         Next = next;
-        
     }
 
     internal static ComplexOption Create(OptionGroup group, Option current, Option next) => new(group, current, next);

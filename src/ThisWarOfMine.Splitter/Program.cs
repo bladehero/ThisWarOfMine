@@ -7,8 +7,7 @@ using OptionParser = ThisWarOfMine.Splitter.Options.OptionParser;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder
-    .Services
-    .AddScoped<IBookCreator, BookCreator>()
+    .Services.AddScoped<IBookCreator, BookCreator>()
     .AddScoped<IBookSplitter, BookSplitter>()
     .AddScoped<IStoryParser, StoryParser>()
     .AddScoped<IOptionParser, OptionParser>()

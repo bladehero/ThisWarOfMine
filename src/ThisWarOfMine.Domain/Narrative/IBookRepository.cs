@@ -2,6 +2,4 @@
 
 namespace ThisWarOfMine.Domain.Narrative;
 
-public interface IBookRepository : IRepository<Book, Guid>
-{
-}
+public interface IBookRepository : IRepository<Book, Guid> { }

@@ -18,8 +18,7 @@ internal sealed class StoryParser : IStoryParser
         var body = rows.Skip(1).ToArray();
         var indexOfFirstOption = IndexOfFirstOption(body);
 
-        return rows
-            .TryFirst()
+        return rows.TryFirst()
             .ToResult("Rows are empty")
             .Bind(ParsingStoryNumber)
             .Bind(AddingNewStory)
@@ -48,8 +47,7 @@ internal sealed class StoryParser : IStoryParser
 
             Result<Alternative> AddingNewAlternative()
             {
-                return book
-                    .AddTranslationAlternative(number, language, string.Join(Environment.NewLine, contentRows))
+                return book.AddTranslationAlternative(number, language, string.Join(Environment.NewLine, contentRows))
                     .MapError(x => x.Message);
             }
         }
@@ -65,11 +63,11 @@ internal sealed class StoryParser : IStoryParser
 
             foreach (var optionRow in optionRows)
             {
-                var result = _optionParser.Parse(optionRow)
-                    .Bind(optionData => 
-                        book
-                            .AddAlternativeOption(number, language, alternativeId, optionData)
-                            .MapError(x => x.Message));
+                var result = _optionParser
+                    .Parse(optionRow)
+                    .Bind(optionData =>
+                        book.AddAlternativeOption(number, language, alternativeId, optionData).MapError(x => x.Message)
+                    );
 
                 if (result.IsFailure)
                 {
@@ -82,11 +80,7 @@ internal sealed class StoryParser : IStoryParser
     }
 
     private static Result<short> ParsingStoryNumber(string source) =>
-        Result
-            .SuccessIf(
-                short.TryParse(source, out var number),
-                number,
-                $"Cannot parse title as number: {source}");
+        Result.SuccessIf(short.TryParse(source, out var number), number, $"Cannot parse title as number: {source}");
 
     private static int IndexOfFirstOption(IReadOnlyList<string> body)
     {

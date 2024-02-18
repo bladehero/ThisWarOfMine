@@ -12,7 +12,8 @@ public sealed class Language : SmartEnum<Language>
     public CultureInfo Culture { get; }
     public string ShortName => Culture.IetfLanguageTag;
 
-    private Language(string name, string culture, int value) : base(name, value)
+    private Language(string name, string culture, int value)
+        : base(name, value)
     {
         Culture = CultureInfo.GetCultureInfo(culture);
     }

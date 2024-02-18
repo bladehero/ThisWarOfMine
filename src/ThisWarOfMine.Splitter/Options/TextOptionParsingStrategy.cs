@@ -23,7 +23,6 @@ internal sealed partial class TextOptionParsingStrategy : IOptionParsingStrategy
         return new TextOptionData(text, withBackToGame);
     }
 
-
     [GeneratedRegex($"^\\s*\\?\\s*(?<{Text}>.+?)(?<{BackToGame}>{Constants.BackToGameMarker})?\\s*\\.?\\s*$")]
     private static partial Regex GetSimpleStoryWithBackToGameRegex();
 }

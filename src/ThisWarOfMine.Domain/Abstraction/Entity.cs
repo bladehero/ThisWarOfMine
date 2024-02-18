@@ -2,7 +2,8 @@
 
 namespace ThisWarOfMine.Domain.Abstraction;
 
-public abstract class Entity<T> : CSharpFunctionalExtensions.Entity<T> where T : IComparable<T>
+public abstract class Entity<T> : CSharpFunctionalExtensions.Entity<T>
+    where T : IComparable<T>
 {
     protected InstanceEventRouter Router { get; } = new();
 
@@ -17,8 +18,7 @@ public abstract class Entity<T> : CSharpFunctionalExtensions.Entity<T> where T :
         });
 
     protected void Register<TEvent>(DomainEventHandler<TEvent, Error> handler)
-        where TEvent : IBaseDomainEvent =>
-        RegisterWithError(handler);
+        where TEvent : IBaseDomainEvent => RegisterWithError(handler);
 
     protected void Register<TEvent, TValue>(DomainEventHandler<TEvent, TValue, Error> handler)
         where TEvent : IBaseDomainEvent
@@ -46,14 +46,16 @@ public abstract class Entity<T> : CSharpFunctionalExtensions.Entity<T> where T :
         Router.Configure(handler);
     }
 
-    internal UnitResult<Error> Route<TEvent>(TEvent @event) where TEvent : IBaseDomainEvent
+    internal UnitResult<Error> Route<TEvent>(TEvent @event)
+        where TEvent : IBaseDomainEvent
     {
         ArgumentNullException.ThrowIfNull(@event);
 
         return Router.Route(@event);
     }
 
-    internal Result<TValue, Error> Route<TEvent, TValue>(TEvent @event) where TEvent : IBaseDomainEvent
+    internal Result<TValue, Error> Route<TEvent, TValue>(TEvent @event)
+        where TEvent : IBaseDomainEvent
     {
         ArgumentNullException.ThrowIfNull(@event);
 

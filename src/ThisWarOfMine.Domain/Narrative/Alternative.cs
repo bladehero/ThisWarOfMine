@@ -15,22 +15,26 @@ public sealed class Alternative : Abstraction.Entity<Guid>
     private Alternative(Translation translation)
     {
         Translation = translation;
-        
+
         Register<AlternativeOptionAddedToBookEvent>(Apply);
     }
 
     internal static Result<Alternative, Error> Create(Translation translation, string text)
     {
-        return
-            Result.FailureIf(
-                string.IsNullOrWhiteSpace(text),
-                NewAlternative(),
-                Error.Because("Alternative text should never be null or whitespace"));
+        return Result.FailureIf(
+            string.IsNullOrWhiteSpace(text),
+            NewAlternative(),
+            Error.Because("Alternative text should never be null or whitespace")
+        );
 
         Alternative NewAlternative()
         {
             var alternative = new Alternative(translation)
-                { Id = Guid.NewGuid(), Text = text, IsOriginal = IfTheVeryFirstAlternative(translation) };
+            {
+                Id = Guid.NewGuid(),
+                Text = text,
+                IsOriginal = IfTheVeryFirstAlternative(translation)
+            };
             alternative.Options = OptionGroup.Empty(alternative);
             return alternative;
         }

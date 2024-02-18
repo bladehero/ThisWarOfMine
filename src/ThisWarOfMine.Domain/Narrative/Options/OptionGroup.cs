@@ -82,9 +82,7 @@ public sealed class OptionGroup : IReadOnlyCollection<Option>
     {
         if (_options.OfType<BackToGameOption>().Any())
         {
-            throw new InvalidOperationException(
-                "Cannot add any option if there is a single back to game added"
-            );
+            throw new InvalidOperationException("Cannot add any option if there is a single back to game added");
         }
     }
 }

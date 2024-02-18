@@ -2,7 +2,8 @@
 
 internal sealed class RemarkOption : Option
 {
-    public RemarkOption(OptionGroup group, string text) : base(group) => Text = text;
+    public RemarkOption(OptionGroup group, string text)
+        : base(group) => Text = text;
 
     public override string Text { get; }
     public override bool IsRedirecting => false;

@@ -50,8 +50,14 @@ internal sealed partial class BookSplitter : IBookSplitter
     private static bool LineIsNotANumber(string? line) => line is not null && !OnlyNumberRule.IsMatch(line);
 
     private static FileStream BookStream(string path) =>
-        new(path, FileMode.Open, FileAccess.Read, FileShare.Read, BufferSize,
-            FileOptions.Asynchronous | FileOptions.SequentialScan);
+        new(
+            path,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read,
+            BufferSize,
+            FileOptions.Asynchronous | FileOptions.SequentialScan
+        );
 
     [GeneratedRegex("^\\s*\\d+\\s*$")]
     private static partial Regex GetNumberOnlyRegex();

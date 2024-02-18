@@ -2,7 +2,8 @@ using CSharpFunctionalExtensions;
 
 namespace ThisWarOfMine.Domain.Abstraction;
 
-public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot where TKey : IComparable<TKey>
+public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot
+    where TKey : IComparable<TKey>
 {
     private readonly List<IBaseDomainEvent> _changes = new();
 
@@ -19,7 +20,7 @@ public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot where T
 
     public void Commit() => _changes.Clear();
 
-    protected UnitResult<Error> ApplyChange<TEvent>(TEvent @event, bool isNew = true) 
+    protected UnitResult<Error> ApplyChange<TEvent>(TEvent @event, bool isNew = true)
         where TEvent : IBaseDomainEvent
     {
         ArgumentNullException.ThrowIfNull(@event);

@@ -6,9 +6,7 @@ public sealed class InstanceEventRouter
 {
     private readonly Dictionary<Key, Func<object, Result<object, Error>>> _handlers = new();
 
-    internal InstanceEventRouter()
-    {
-    }
+    internal InstanceEventRouter() { }
 
     internal void Configure<TEvent, TError>(DomainEventHandler<TEvent, TError> handler)
         where TEvent : IBaseDomainEvent
@@ -28,7 +26,8 @@ public sealed class InstanceEventRouter
         _handlers.Add(Key.From<TEvent, TValue>(), @event => handler((TEvent)@event));
     }
 
-    internal UnitResult<Error> Route<TEvent>(TEvent @event) where TEvent : IBaseDomainEvent
+    internal UnitResult<Error> Route<TEvent>(TEvent @event)
+        where TEvent : IBaseDomainEvent
     {
         ArgumentNullException.ThrowIfNull(@event);
 
@@ -41,7 +40,8 @@ public sealed class InstanceEventRouter
         return handler(@event);
     }
 
-    internal Result<TValue, Error> Route<TEvent, TValue>(TEvent @event) where TEvent : IBaseDomainEvent
+    internal Result<TValue, Error> Route<TEvent, TValue>(TEvent @event)
+        where TEvent : IBaseDomainEvent
     {
         ArgumentNullException.ThrowIfNull(@event);
 
@@ -57,8 +57,11 @@ public sealed class InstanceEventRouter
     private readonly record struct Key(Type EventType, Maybe<Type> ValueType)
     {
         public static Key From<TEvent>() => new(typeof(TEvent), Maybe.None);
+
         public static Key From<TEvent, TValue>() => new(typeof(TEvent), typeof(TValue));
+
         public static Key From(IBaseDomainEvent @event) => new(@event.GetType(), Maybe.None);
+
         public static Key From<TValue>(IBaseDomainEvent @event) => new(@event.GetType(), typeof(TValue));
     }
 }

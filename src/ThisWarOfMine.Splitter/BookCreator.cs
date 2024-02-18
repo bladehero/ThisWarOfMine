@@ -17,8 +17,7 @@ internal sealed class BookCreator : IBookCreator
 
     public ValueTask<Book> CreateAsync(string name, string path, Language language, CancellationToken token = default)
     {
-        return Book
-            .Create(name)
+        return Book.Create(name)
             .Tap(async book =>
             {
                 await foreach (var rows in _bookSplitter.SplitAsync(path, token))
@@ -27,7 +26,8 @@ internal sealed class BookCreator : IBookCreator
                 }
             })
             .OnFallback(error =>
-                throw new InvalidOperationException($"Cannot create book because of: {error.Message}"));
+                throw new InvalidOperationException($"Cannot create book because of: {error.Message}")
+            );
     }
 
     private static void ThrowOnError(string error) => throw new InvalidOperationException(error);

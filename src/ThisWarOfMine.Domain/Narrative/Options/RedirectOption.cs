@@ -16,9 +16,9 @@ public sealed class RedirectOption : Option
     public override string Text => $"{Map.ValueRef(Group.Alternative.Translation.Language)} {StoryNumber}";
     public override bool IsRedirecting => true;
 
-    public RedirectOption(OptionGroup group) : base(group)
-    {
-    }
+    public RedirectOption(OptionGroup group)
+        : base(group) { }
 
-    internal static RedirectOption Create(OptionGroup group, int storyNumber) => new(group) { StoryNumber = storyNumber };
+    internal static RedirectOption Create(OptionGroup group, int storyNumber) =>
+        new(group) { StoryNumber = storyNumber };
 }

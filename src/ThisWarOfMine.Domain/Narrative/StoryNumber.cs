@@ -17,7 +17,8 @@ public sealed class StoryNumber : ValueObject
         if (Story.HasValue)
         {
             throw new InvalidOperationException(
-                "Cannot assign story to story number that has already been assigned to story");
+                "Cannot assign story to story number that has already been assigned to story"
+            );
         }
 
         Story = story;

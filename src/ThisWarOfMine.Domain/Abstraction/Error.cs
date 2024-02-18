@@ -9,16 +9,13 @@ public class Error : ValueObject, ICombine
     public virtual string Message => Exception.HasValue ? Exception.Value.Message : _message;
     public Maybe<Exception> Exception { get; private init; }
 
-    private Error()
-    {
-    }
+    private Error() { }
 
     ICombine ICombine.Combine(ICombine combine)
     {
         if (combine is not Error error)
         {
-            throw new InvalidCastException(
-                $"Cannot combine `{combine.GetType()}` as {nameof(Error)}");
+            throw new InvalidCastException($"Cannot combine `{combine.GetType()}` as {nameof(Error)}");
         }
 
         return Combine(error);
@@ -43,9 +40,7 @@ public class Error : ValueObject, ICombine
         public Maybe<ComplexError> Next { get; private set; }
         public override string Message => BuildMessage();
 
-        private ComplexError()
-        {
-        }
+        private ComplexError() { }
 
         public override Error Combine(Error error)
         {
@@ -64,13 +59,13 @@ public class Error : ValueObject, ICombine
             return new ComplexError { _current = error };
         }
 
-
         #region Helpers
 
         private ComplexError Last()
         {
             var error = Next.GetValueOrThrow(
-                $"{nameof(ComplexError)} should never has no next value for first chain part");
+                $"{nameof(ComplexError)} should never has no next value for first chain part"
+            );
             while (error.Next.HasValue)
             {
                 error = error.Next.Value;
@@ -112,7 +107,8 @@ public class Error : ValueObject, ICombine
             if (error.IsComplex())
             {
                 throw new InvalidOperationException(
-                    $"Cannot start {nameof(ComplexError)} with another complex error: `{error}`");
+                    $"Cannot start {nameof(ComplexError)} with another complex error: `{error}`"
+                );
             }
         }
 
