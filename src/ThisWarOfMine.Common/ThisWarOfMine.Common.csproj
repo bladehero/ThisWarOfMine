@@ -8,6 +8,10 @@
 
     <ItemGroup>
       <PackageReference Include="CSharpFunctionalExtensions" Version="2.40.3" />
+      <PackageReference Include="CSharpier.MsBuild" Version="0.27.2">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
 
 </Project>
