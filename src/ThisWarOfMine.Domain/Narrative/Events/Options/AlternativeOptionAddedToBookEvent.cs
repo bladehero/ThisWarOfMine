@@ -2,8 +2,9 @@
 
 internal sealed record AlternativeOptionAddedToBookEvent(
     Guid BookId,
+    DateTime Timestamp,
     StoryNumber Number,
     Language Language,
     Guid AlternativeId,
     IOptionData OptionData
-) : BaseBookEvent(BookId);
+) : BaseBookEvent(BookId, Timestamp);

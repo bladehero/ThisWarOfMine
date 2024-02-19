@@ -2,4 +2,4 @@
 
 namespace ThisWarOfMine.Domain.Narrative.Events;
 
-public abstract record BaseBookEvent(Guid BookId) : IBaseDomainEvent;
+public abstract record BaseBookEvent(Guid BookId, DateTime Timestamp) : IBaseDomainEvent;

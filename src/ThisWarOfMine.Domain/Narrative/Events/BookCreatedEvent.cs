@@ -1,3 +1,3 @@
 ﻿namespace ThisWarOfMine.Domain.Narrative.Events;
 
-public sealed record BookCreatedEvent(Guid BookId, string Name) : BaseBookEvent(BookId);
+public sealed record BookCreatedEvent(Guid BookId, DateTime Timestamp, string Name) : BaseBookEvent(BookId, Timestamp);
