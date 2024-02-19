@@ -49,7 +49,7 @@ public sealed class Book : AggregateRoot<Guid>
                 this,
                 Error.Because("Number of newly added story should be always higher than any number of existing stories")
             )
-            .Tap(() => ApplyChange(new StoryAddedToBookEvent(Id, number)));
+            .Tap(() => ApplyChange(new StoryAddedToBookEvent(Id, DateTime.UtcNow, number)));
 
         bool LastStoryNumberIsHigherThanNewOne() => _stories.LastOrDefault()?.Number > number;
     }
@@ -57,7 +57,9 @@ public sealed class Book : AggregateRoot<Guid>
     public Result<Book, Error> TranslateStory(StoryNumber number, Language language)
     {
         return StoryBy(number)
-            .Bind(story => ApplyChange(new StoryTranslationAddedToBookEvent(Id, story.Number, language)))
+            .Bind(story =>
+                ApplyChange(new StoryTranslationAddedToBookEvent(Id, DateTime.UtcNow, story.Number, language))
+            )
             .Map(() => this);
     }
 
@@ -71,7 +73,7 @@ public sealed class Book : AggregateRoot<Guid>
         return StoryBy(number)
             .Bind(story =>
                 ApplyChange<TranslationAlternativeAddedToBookEvent, Alternative>(
-                    new TranslationAlternativeAddedToBookEvent(Id, story.Number, language, guid, text)
+                    new TranslationAlternativeAddedToBookEvent(Id, DateTime.UtcNow, story.Number, language, guid, text)
                 )
             );
     }
@@ -86,7 +88,14 @@ public sealed class Book : AggregateRoot<Guid>
         return StoryBy(number).Bind(story => ApplyChange(NewOptionEventFor(story))).Map(() => this);
 
         BaseBookEvent NewOptionEventFor(Story story) =>
-            new AlternativeOptionAddedToBookEvent(Id, story.Number, language, alternativeId, optionData);
+            new AlternativeOptionAddedToBookEvent(
+                Id,
+                DateTime.UtcNow,
+                story.Number,
+                language,
+                alternativeId,
+                optionData
+            );
     }
 
     #endregion
@@ -95,7 +104,7 @@ public sealed class Book : AggregateRoot<Guid>
     {
         return Result
             .FailureIf(NameIsNull, new Book(capacity), Error.Because("Name of book should be always filled"))
-            .Tap(book => book.ApplyChange(new BookCreatedEvent(guid, name)));
+            .Tap(book => book.ApplyChange(new BookCreatedEvent(guid, DateTime.UtcNow, name)));
 
         bool NameIsNull() => string.IsNullOrWhiteSpace(name);
     }
@@ -104,14 +113,14 @@ public sealed class Book : AggregateRoot<Guid>
 
     private void Apply(BookCreatedEvent @event)
     {
-        var (id, name) = @event;
+        var (id, _, name) = @event;
         Id = id;
         Name = name;
     }
 
     private UnitResult<Error> Apply(StoryAddedToBookEvent @event)
     {
-        var (_, storyNumber) = @event;
+        var (_, _, storyNumber) = @event;
         return Story
             .Create(this, storyNumber)
             .Tap(story => _stories.Add(story))
@@ -125,7 +134,7 @@ public sealed class Book : AggregateRoot<Guid>
 
     private Result<Alternative, Error> Apply(TranslationAlternativeAddedToBookEvent @event)
     {
-        var (_, storyNumber, language, _, _) = @event;
+        var (_, _, storyNumber, language, _, _) = @event;
         return StoryBy(storyNumber)
             .Bind(story => story.TranslationBy(language))
             .Bind(translation => translation.Route<TranslationAlternativeAddedToBookEvent, Alternative>(@event));
@@ -133,7 +142,7 @@ public sealed class Book : AggregateRoot<Guid>
 
     private UnitResult<Error> Apply(AlternativeOptionAddedToBookEvent @event)
     {
-        var (_, storyNumber, language, alternativeId, _) = @event;
+        var (_, _, storyNumber, language, alternativeId, _) = @event;
         return StoryBy(storyNumber)
             .Bind(story => story.TranslationBy(language))
             .Bind(translation => translation.AlternativeBy(alternativeId))

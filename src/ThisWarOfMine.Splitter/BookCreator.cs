@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Runtime.CompilerServices;
 using ThisWarOfMine.Common;
 using ThisWarOfMine.Domain.Narrative;
 
@@ -8,27 +8,45 @@ internal sealed class BookCreator : IBookCreator
 {
     private readonly IBookSplitter _bookSplitter;
     private readonly IStoryParser _storyParser;
+    private readonly IBookRepository _bookRepository;
 
-    public BookCreator(IBookSplitter bookSplitter, IStoryParser storyParser)
+    private Book? _book;
+
+    public BookCreator(IBookSplitter bookSplitter, IStoryParser storyParser, IBookRepository bookRepository)
     {
         _bookSplitter = bookSplitter;
         _storyParser = storyParser;
+        _bookRepository = bookRepository;
     }
 
-    public ValueTask<Book> CreateAsync(string name, string path, Language language, CancellationToken token = default)
+    public async Task<Book> InitializeAsync(string name, CancellationToken token = default)
     {
-        return Book.Create(Guid.NewGuid(), name)
-            .Tap(async book =>
-            {
-                await foreach (var rows in _bookSplitter.SplitAsync(path, token))
-                {
-                    _storyParser.ParseIn(book, language, rows).TapError(ThrowOnError);
-                }
-            })
+        _book = Book.Create(Guid.NewGuid(), name)
             .OnFallback(error =>
                 throw new InvalidOperationException($"Cannot create book because of: {error.Message}")
             );
+        await _bookRepository.SaveAsync(_book, token);
+        return _book;
     }
 
-    private static void ThrowOnError(string error) => throw new InvalidOperationException(error);
+    public async IAsyncEnumerable<Story> FulFillAsync(
+        string path,
+        Language language,
+        [EnumeratorCancellation] CancellationToken token = default
+    )
+    {
+        if (_book is null)
+        {
+            throw new InvalidOperationException("Cannot fulfill book before it's been initialized");
+        }
+
+        await foreach (var rows in _bookSplitter.SplitAsync(path, token))
+        {
+            var story = _storyParser.ParseIn(_book, language, rows).OnFallback(ThrowOnError);
+            await _bookRepository.SaveAsync(_book, token);
+            yield return story;
+        }
+    }
+
+    private static Story ThrowOnError(string error) => throw new InvalidOperationException(error);
 }

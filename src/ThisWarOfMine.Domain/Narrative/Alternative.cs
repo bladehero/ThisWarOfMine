@@ -44,7 +44,7 @@ public sealed class Alternative : Abstraction.Entity<Guid>
 
     private UnitResult<Error> Apply(AlternativeOptionAddedToBookEvent @event)
     {
-        var (_, _, _, _, optionData) = @event;
+        var (_, _, _, _, _, optionData) = @event;
 
         Result<Option, Error> result = optionData switch
         {

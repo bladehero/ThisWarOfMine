@@ -1,27 +1,23 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ThisWarOfMine.Common;
 using ThisWarOfMine.Domain.Narrative;
+using ThisWarOfMine.Infrastructure;
 using ThisWarOfMine.Splitter;
-using ThisWarOfMine.Splitter.Options;
-using OptionParser = ThisWarOfMine.Splitter.Options.OptionParser;
 
+var assemblies = AssemblyHelper.LoadAssemblies<Program>("ThisWarOfMine");
 var builder = Host.CreateApplicationBuilder(args);
-builder
-    .Services.AddScoped<IBookCreator, BookCreator>()
-    .AddScoped<IBookSplitter, BookSplitter>()
-    .AddScoped<IStoryParser, StoryParser>()
-    .AddScoped<IOptionParser, OptionParser>()
-    .AddScoped<IOptionParsingStrategy, OnlyBackToGameOptionParsingStrategy>()
-    .AddScoped<IOptionParsingStrategy, RemarkOptionParsingStrategy>()
-    .AddScoped<IOptionParsingStrategy, BackToStoryOptionParsingStrategy>()
-    .AddScoped<IOptionParsingStrategy, RedirectOptionParsingStrategy>()
-    .AddScoped<IOptionParsingStrategy, TextOptionParsingStrategy>();
+builder.Services.AddInfrastructure(builder.Configuration, assemblies).AddSplitter();
 using var host = builder.Build();
 
 await host.StartAsync();
 
+const string bookName = "Book of Scripts";
 const string bookFile = "book.txt";
 
 var bookCreator = host.Services.GetRequiredService<IBookCreator>();
-var book = await bookCreator.CreateAsync("Book of Scripts", bookFile, Language.Russian);
-;
+var book = bookCreator.InitializeAsync(bookName);
+await foreach (var story in bookCreator.FulFillAsync(bookFile, Language.Russian))
+{
+    ;
+}

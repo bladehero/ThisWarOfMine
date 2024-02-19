@@ -10,6 +10,7 @@
     <ItemGroup>
       <ProjectReference Include="..\ThisWarOfMine.Common\ThisWarOfMine.Common.csproj" />
       <ProjectReference Include="..\ThisWarOfMine.Domain\ThisWarOfMine.Domain.csproj" />
+      <ProjectReference Include="..\ThisWarOfMine.Infrastructure\ThisWarOfMine.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -35,6 +36,10 @@
       <None Remove="book.txt" />
       <Content Include="book.txt">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="appsettings.json" />
+      <Content Include="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
 
