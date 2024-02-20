@@ -5,5 +5,5 @@ namespace ThisWarOfMine.Splitter.Options;
 
 internal interface IOptionParser
 {
-    Result<IOptionData> Parse(string optionRow);
+    Result<IOptionData> Parse(string optionRow, int order);
 }

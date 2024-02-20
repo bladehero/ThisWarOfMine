@@ -4,21 +4,27 @@ using ThisWarOfMine.Domain.Narrative;
 
 namespace ThisWarOfMine.Infrastructure.Books;
 
-internal sealed class FileNameResolver : IFileNameResolver
+internal sealed class BookNameResolver : IBookNameResolver
 {
     private readonly IOptionsSnapshot<BookConfiguration> _options;
 
-    public FileNameResolver(IOptionsSnapshot<BookConfiguration> options)
+    public BookNameResolver(IOptionsSnapshot<BookConfiguration> options)
     {
         _options = options;
+    }
+
+    public string GetFileNameFor(Guid bookId)
+    {
+        var configuration = _options.Value;
+        var file = Path.ChangeExtension(bookId.ToString(), "zip");
+        return Path.Combine(configuration.Folder, file);
     }
 
     public Maybe<string> IfNotExistsGetFileNameFor(Book aggregate)
     {
         var configuration = _options.Value;
         Directory.CreateDirectory(configuration.Folder);
-        var file = Path.ChangeExtension(aggregate.Id.ToString(), "zip");
-        var path = Path.Combine(configuration.Folder, file);
+        var path = GetFileNameFor(aggregate.Id);
         if (File.Exists(path))
         {
             return Maybe.None;

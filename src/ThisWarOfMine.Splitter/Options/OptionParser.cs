@@ -12,11 +12,11 @@ internal sealed class OptionParser : IOptionParser
         _strategies = strategies;
     }
 
-    public Result<IOptionData> Parse(string optionRow)
+    public Result<IOptionData> Parse(string optionRow, int order)
     {
         foreach (var strategy in _strategies)
         {
-            var option = strategy.TryParse(optionRow);
+            var option = strategy.TryParse(optionRow, order);
             if (option.HasValue)
             {
                 return Result.Success(option.Value);

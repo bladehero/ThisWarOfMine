@@ -5,5 +5,5 @@ namespace ThisWarOfMine.Splitter.Options;
 
 internal interface IOptionParsingStrategy
 {
-    Maybe<IOptionData> TryParse(string optionRow);
+    Maybe<IOptionData> TryParse(string optionRow, int order);
 }

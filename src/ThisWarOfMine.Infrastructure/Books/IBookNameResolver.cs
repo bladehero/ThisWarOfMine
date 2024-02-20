@@ -3,7 +3,8 @@ using ThisWarOfMine.Domain.Narrative;
 
 namespace ThisWarOfMine.Infrastructure.Books;
 
-internal interface IFileNameResolver
+internal interface IBookNameResolver
 {
+    string GetFileNameFor(Guid bookId);
     Maybe<string> IfNotExistsGetFileNameFor(Book aggregate);
 }

@@ -66,10 +66,11 @@ internal sealed class StoryParser : IStoryParser
                 throw new InvalidOperationException("The story should have at least one option");
             }
 
+            var order = 0;
             foreach (var optionRow in optionRows)
             {
                 var result = _optionParser
-                    .Parse(optionRow)
+                    .Parse(optionRow, order)
                     .Bind(optionData =>
                         book.AddAlternativeOption(number, language, alternativeId, optionData).MapError(x => x.Message)
                     );
@@ -78,6 +79,8 @@ internal sealed class StoryParser : IStoryParser
                 {
                     return Result.Failure<Story>(result.Error);
                 }
+
+                order++;
             }
 
             return book.StoryBy(number).MapError(x => x.Message);

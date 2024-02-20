@@ -1,4 +1,4 @@
-﻿namespace ThisWarOfMine.Infrastructure;
+﻿namespace ThisWarOfMine.Infrastructure.Books;
 
 internal sealed class BookConfiguration
 {
