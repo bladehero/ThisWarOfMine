@@ -48,10 +48,11 @@ public sealed class Alternative : Abstraction.Entity<Guid>
 
         Result<Option, Error> result = optionData switch
         {
-            BackToGameOptionData => Options.WithOnlyBackToGame(),
-            RemarkOptionData data => Options.Note(data.Remark),
-            TextOptionData data => Options.AppendWithText(data.Text, data.WithBackToGame),
-            RedirectionOptionData data => Options.AppendWithRedirection(data.Text, data.StoryNumber, data.Appendix),
+            BackToGameOptionData data => Options.WithOnlyBackToGame(data.Id),
+            RemarkOptionData data => Options.Note(data.Id, data.Remark),
+            TextOptionData data => Options.AppendWithText(data.Id, data.Text, data.WithBackToGame),
+            RedirectionOptionData data
+                => Options.AppendWithRedirection(data.Id, data.Text, data.StoryNumber, data.Appendix),
             _ => Error.Because($"Option data `{optionData}` was in incorrect format or type is not supported")
         };
 

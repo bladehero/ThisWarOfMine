@@ -5,8 +5,8 @@ internal sealed class SimpleOption : Option
     public override string Text { get; }
     public override bool IsRedirecting => false;
 
-    private SimpleOption(OptionGroup group, string text)
-        : base(group) => Text = text;
+    private SimpleOption(OptionGroup group, Guid guid, string text)
+        : base(group, guid) => Text = text;
 
-    internal static SimpleOption Create(OptionGroup group, string text) => new(group, text);
+    internal static SimpleOption Create(OptionGroup group, Guid guid, string text) => new(group, guid, text);
 }

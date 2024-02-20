@@ -6,29 +6,29 @@ namespace ThisWarOfMine.Infrastructure.Books;
 
 internal sealed class BookZipArchiveRepository : DispatchableRepository<Book, Guid>, IBookRepository
 {
-    private readonly IFileNameResolver _fileNameResolver;
+    private readonly IBookNameResolver _bookNameResolver;
     private readonly IZipBookCreator _zipBookCreator;
 
     public BookZipArchiveRepository(
         IMediator mediator,
-        IFileNameResolver fileNameResolver,
+        IBookNameResolver bookNameResolver,
         IZipBookCreator zipBookCreator
     )
         : base(mediator)
     {
-        _fileNameResolver = fileNameResolver;
+        _bookNameResolver = bookNameResolver;
         _zipBookCreator = zipBookCreator;
     }
 
     protected override Task SaveAsync(Book aggregate, CancellationToken cancellationToken)
     {
-        var file = _fileNameResolver.IfNotExistsGetFileNameFor(aggregate);
-        if (file.HasNoValue)
+        var file = _bookNameResolver.IfNotExistsGetFileNameFor(aggregate);
+        if (file.HasValue)
         {
-            return Task.CompletedTask;
+            return _zipBookCreator.CreateAsync(file.Value, aggregate);
         }
 
-        return _zipBookCreator.CreateAsync(file.Value, aggregate);
+        return Task.CompletedTask;
     }
 
     public override Task<Book> LoadAsync(Guid id, CancellationToken cancellationToken)

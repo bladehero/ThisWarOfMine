@@ -1,6 +1,6 @@
 ﻿namespace ThisWarOfMine.Domain.Narrative.Events;
 
-internal sealed record TranslationAlternativeAddedToBookEvent(
+public sealed record TranslationAlternativeAddedToBookEvent(
     Guid BookId,
     DateTime Timestamp,
     StoryNumber Number,

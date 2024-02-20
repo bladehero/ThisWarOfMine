@@ -1,8 +1,10 @@
 ﻿using System.Collections;
+using MediatR;
+using ThisWarOfMine.Domain.Abstraction;
 
 namespace ThisWarOfMine.Domain.Narrative.Options;
 
-public sealed class OptionGroup : IReadOnlyCollection<Option>
+public sealed class OptionGroup : Entity<Unit>, IReadOnlyCollection<Option>
 {
     private readonly List<Option> _options = new();
 
@@ -10,25 +12,28 @@ public sealed class OptionGroup : IReadOnlyCollection<Option>
     public int Count => _options.Count;
     public bool HasRemarks => _options.OfType<RemarkOption>().Any();
 
-    private OptionGroup(Alternative alternative) => Alternative = alternative;
-
-    internal Option Note(string remark)
+    private OptionGroup(Alternative alternative)
     {
-        var remarkOption = RemarkOption.Create(this, remark);
+        Alternative = alternative;
+    }
+
+    internal Option Note(Guid guid, string remark)
+    {
+        var remarkOption = RemarkOption.Create(this, guid, remark);
         _options.Add(remarkOption);
         return remarkOption;
     }
 
-    internal Option WithOnlyBackToGame()
+    internal Option WithOnlyBackToGame(Guid guid)
     {
         ThrowIfBackToGameExists();
 
-        var option = BackToGameOption.Create(this);
+        var option = BackToGameOption.Create(this, guid);
         _options.Add(option);
         return option;
     }
 
-    internal Option AppendWithText(string text, bool withBackToGame)
+    internal Option AppendWithText(Guid guid, string text, bool withBackToGame)
     {
         ThrowIfBackToGameExists();
 
@@ -38,33 +43,33 @@ public sealed class OptionGroup : IReadOnlyCollection<Option>
 
         Option GetTextOption()
         {
-            var simpleOption = SimpleOption.Create(this, text);
+            var simpleOption = SimpleOption.Create(this, guid, text);
             if (!withBackToGame)
             {
                 return simpleOption;
             }
 
-            var backToGameOption = BackToGameOption.Create(this);
+            var backToGameOption = BackToGameOption.Create(this, guid);
             var complexOption = ComplexOption.Create(this, simpleOption, backToGameOption);
             return complexOption;
         }
     }
 
-    internal Option AppendWithRedirection(string? text, int storyNumber, string? appendix)
+    internal Option AppendWithRedirection(Guid guid, string? text, int storyNumber, string? appendix)
     {
         ThrowIfBackToGameExists();
 
-        Option redirectOption = RedirectOption.Create(this, storyNumber);
+        Option redirectOption = RedirectOption.Create(this, guid, storyNumber);
 
         if (!string.IsNullOrWhiteSpace(text))
         {
-            var textOption = SimpleOption.Create(this, text);
+            var textOption = SimpleOption.Create(this, guid, text);
             redirectOption = redirectOption.Prepend(textOption);
         }
 
         if (!string.IsNullOrWhiteSpace(appendix))
         {
-            var appendixOption = SimpleOption.Create(this, appendix);
+            var appendixOption = SimpleOption.Create(this, guid, appendix);
             redirectOption = redirectOption.Append(appendixOption);
         }
 

@@ -9,7 +9,7 @@ internal sealed class ComplexOption : Option
     public override bool IsRedirecting => Current.IsRedirecting || Next.IsRedirecting;
 
     private ComplexOption(OptionGroup group, Option current, Option next)
-        : base(group)
+        : base(group, current.Id)
     {
         Current = current;
         Next = next;

@@ -1,6 +1,6 @@
 ﻿namespace ThisWarOfMine.Domain.Narrative.Events.Options;
 
-internal sealed record AlternativeOptionAddedToBookEvent(
+public sealed record AlternativeOptionAddedToBookEvent(
     Guid BookId,
     DateTime Timestamp,
     StoryNumber Number,

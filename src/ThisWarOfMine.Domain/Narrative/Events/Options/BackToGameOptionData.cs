@@ -1,3 +1,3 @@
 ﻿namespace ThisWarOfMine.Domain.Narrative.Events.Options;
 
-public readonly record struct BackToGameOptionData : IOptionData;
+public sealed record BackToGameOptionData(Guid Id, int Order) : IOptionData;

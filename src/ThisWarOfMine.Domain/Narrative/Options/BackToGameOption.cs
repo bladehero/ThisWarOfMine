@@ -14,8 +14,8 @@ public sealed class BackToGameOption : Option
     public override string Text => Map.ValueRef(Group.Alternative.Translation.Language);
     public override bool IsRedirecting => false;
 
-    private BackToGameOption(OptionGroup group)
-        : base(group) { }
+    private BackToGameOption(OptionGroup group, Guid guid)
+        : base(group, guid) { }
 
-    internal static BackToGameOption Create(OptionGroup group) => new(group);
+    internal static BackToGameOption Create(OptionGroup group, Guid guid) => new(group, guid);
 }
