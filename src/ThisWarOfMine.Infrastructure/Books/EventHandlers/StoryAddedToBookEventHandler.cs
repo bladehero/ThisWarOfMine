@@ -14,18 +14,6 @@ internal sealed class StoryAddedToBookEventHandler : IDomainEventHandler<StoryAd
 
     public Task Handle(StoryAddedToBookEvent notification, CancellationToken cancellationToken)
     {
-        var (bookId, _, storyNumber) = notification;
-
-        return _bookAccessor.UseAsync(
-            bookId,
-            archive =>
-                Task.Factory.StartNew(
-                    () =>
-                    {
-                        archive.CreateEntry($"{storyNumber.Value}/");
-                    },
-                    cancellationToken
-                )
-        );
+        return Task.CompletedTask;
     }
 }

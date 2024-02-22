@@ -14,15 +14,6 @@ internal sealed class StoryTranslationAddedToBookEventHandler : IDomainEventHand
 
     public Task Handle(StoryTranslationAddedToBookEvent notification, CancellationToken cancellationToken)
     {
-        var (bookId, _, storyNumber, language) = notification;
-
-        return _bookAccessor.UseAsync(
-            bookId,
-            archive =>
-            {
-                archive.CreateEntry($"{storyNumber}/{language.ShortName}/");
-                return Task.CompletedTask;
-            }
-        );
+        return Task.CompletedTask;
     }
 }

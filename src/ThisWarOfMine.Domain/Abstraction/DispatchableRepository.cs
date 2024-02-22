@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using CSharpFunctionalExtensions;
+using MediatR;
 
 namespace ThisWarOfMine.Domain.Abstraction;
 
@@ -21,7 +22,7 @@ public abstract class DispatchableRepository<TRoot, TKey> : IRepository<TRoot, T
         await DispatchDomainEventsAsync(aggregate, cancellationToken);
     }
 
-    public abstract Task<TRoot> LoadAsync(TKey id, CancellationToken cancellationToken);
+    public abstract Task<Result<TRoot, Error>> LoadAsync(TKey id, CancellationToken cancellationToken = default);
 
     private async Task DispatchDomainEventsAsync(TRoot aggregateRoot, CancellationToken cancellationToken)
     {

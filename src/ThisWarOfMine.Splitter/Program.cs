@@ -30,3 +30,7 @@ await foreach (var story in bookCreator.FulFillAsync(bookFile, Language.Russian)
 }
 
 longWriteOperationAccessor.Dispose();
+
+var repository = host.Services.GetRequiredService<IBookRepository>();
+var result = await repository.LoadAsync(book.Id);
+;
