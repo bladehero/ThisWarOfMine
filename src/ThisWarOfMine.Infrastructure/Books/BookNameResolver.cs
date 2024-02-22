@@ -17,13 +17,13 @@ internal sealed class BookNameResolver : IBookNameResolver
     {
         var configuration = _options.Value;
         var file = Path.ChangeExtension(bookId.ToString(), "zip");
-        return Path.Combine(configuration.Folder, file);
+        return Path.Combine(configuration.Folder!.Path, file);
     }
 
     public Maybe<string> IfNotExistsGetFileNameFor(Book aggregate)
     {
         var configuration = _options.Value;
-        Directory.CreateDirectory(configuration.Folder);
+        Directory.CreateDirectory(configuration.Folder!.Path);
         var path = GetFileNameFor(aggregate.Id);
         if (File.Exists(path))
         {

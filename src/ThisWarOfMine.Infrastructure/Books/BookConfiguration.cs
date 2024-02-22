@@ -2,5 +2,5 @@
 
 internal sealed class BookConfiguration
 {
-    public string Folder { get; set; }
+    public BookFolderPath? Folder { get; set; }
 }

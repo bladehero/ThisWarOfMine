@@ -22,7 +22,7 @@ public static class DependencyInjectionExtensions
             .AddScoped<IOptionDataSerializer, OptionDataSerializer>()
             .AddAll<IOptionSerializationStrategy>(assemblies)
             .AddBookAccessor()
-            .AddConfiguration<BookConfiguration>(configuration)
+            .AddBookConfiguration(configuration)
             .AddMediatR(x => x.RegisterServicesFromAssemblies(assemblies));
 
     public static IServiceCollection ConfigureBookAccessor(
@@ -41,4 +41,23 @@ public static class DependencyInjectionExtensions
 
     private static IServiceCollection AddBookAccessor(this IServiceCollection services) =>
         services.AddScoped<IBookAccessor, BookAccessor>().ConfigureBookAccessor();
+
+    private static IServiceCollection AddBookConfiguration(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
+    {
+        var builder = services.AddOptions<BookConfiguration>();
+        var section = configuration.GetSection($"{nameof(BookConfiguration)}:Folder");
+        if (!string.IsNullOrWhiteSpace(section.Value))
+        {
+            builder.Configure(x => x.Folder = section.Value);
+            return services;
+        }
+
+        var settings = new BookFolderPath.BookFolderSettings();
+        section.Bind(settings);
+        builder.Configure(x => x.Folder = settings);
+        return services;
+    }
 }
