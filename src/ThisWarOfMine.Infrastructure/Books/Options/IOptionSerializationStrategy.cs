@@ -8,21 +8,22 @@ internal interface IOptionSerializationStrategy<TOption> : IOptionSerializationS
     where TOption : IOptionData
 {
     string Serialize(TOption optionData);
-    new Task<Maybe<TOption>> TryDeserialize(ZipArchiveEntry entry, CancellationToken token);
+    new Maybe<TOption> TryDeserialize(ZipArchiveEntry entry, string content);
 
     bool IOptionSerializationStrategy.CompatibleFor(IOptionData data) => typeof(TOption) == data.GetType();
 
     string IOptionSerializationStrategy.Serialize(IOptionData optionData) => Serialize((TOption)optionData);
 
-    Task<Maybe<IOptionData>> IOptionSerializationStrategy.TryDeserialize(
+    Maybe<IOptionData> IOptionSerializationStrategy.TryDeserialize(
         ZipArchiveEntry entry,
+        string content,
         CancellationToken token
-    ) => TryDeserialize(entry, token).Map(x => (IOptionData)x);
+    ) => TryDeserialize(entry, content).Map(x => (IOptionData)x);
 }
 
 internal interface IOptionSerializationStrategy
 {
     bool CompatibleFor(IOptionData data);
     string Serialize(IOptionData optionData);
-    Task<Maybe<IOptionData>> TryDeserialize(ZipArchiveEntry entry, CancellationToken token);
+    Maybe<IOptionData> TryDeserialize(ZipArchiveEntry entry, string content, CancellationToken token);
 }

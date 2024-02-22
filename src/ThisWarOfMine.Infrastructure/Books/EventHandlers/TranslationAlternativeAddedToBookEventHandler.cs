@@ -1,5 +1,4 @@
-﻿using System.IO.Compression;
-using ThisWarOfMine.Domain.Abstraction;
+﻿using ThisWarOfMine.Domain.Abstraction;
 using ThisWarOfMine.Domain.Narrative.Events;
 
 namespace ThisWarOfMine.Infrastructure.Books.EventHandlers;
@@ -21,10 +20,7 @@ internal sealed class TranslationAlternativeAddedToBookEventHandler
             bookId,
             async archive =>
             {
-                var entry = archive.CreateEntry(
-                    $"{storyNumber}/{language.ShortName}/{alternativeId}/content",
-                    CompressionLevel.Optimal
-                );
+                var entry = archive.CreateEntry($"{storyNumber}/{language.ShortName}/{alternativeId}/content");
                 await using var stream = entry.Open();
                 await using var writer = new StreamWriter(stream);
                 await writer.WriteAsync(text);

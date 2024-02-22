@@ -1,5 +1,4 @@
-﻿using System.IO.Compression;
-using ThisWarOfMine.Domain.Abstraction;
+﻿using ThisWarOfMine.Domain.Abstraction;
 using ThisWarOfMine.Domain.Narrative.Events.Options;
 using ThisWarOfMine.Infrastructure.Books.Options;
 
@@ -27,8 +26,7 @@ internal sealed class AlternativeOptionAddedToBookEventHandler : IDomainEventHan
             async archive =>
             {
                 var entry = archive.CreateEntry(
-                    $"{storyNumber}/{language.ShortName}/{alternativeId}/options/{optionData.Id}",
-                    CompressionLevel.Optimal
+                    $"{storyNumber}/{language.ShortName}/{alternativeId}/options/{optionData.Id}"
                 );
                 entry.Comment = optionData.Order.ToString();
                 await using var stream = entry.Open();

@@ -21,18 +21,18 @@ internal sealed class OptionDataSerializer : IOptionDataSerializer
 
     public async Task<IOptionData> DeserializeAsync(ZipArchiveEntry entry, CancellationToken token = default)
     {
-        var tasks = _strategies.Select(x => x.TryDeserialize(entry, token));
-        var maybes = await Task.WhenAll(tasks);
-
-        var options = maybes.Where(x => x.HasValue).Select(x => x.Value).ToArray();
-        return options.Length switch
+        await using var stream = entry.Open();
+        using var reader = new StreamReader(stream);
+        var content = await reader.ReadToEndAsync(token);
+        foreach (var strategy in _strategies)
         {
-            0 => throw new InvalidOperationException($"Cannot find proper option data type for entry: `{entry.Name}`"),
-            1 => options.First(),
-            _
-                => throw new InvalidOperationException(
-                    $"Ambiguous option type: ({string.Join(", ", options.Select(x => x.GetType()))})"
-                )
-        };
+            var (canDeserialize, optionData) = strategy.TryDeserialize(entry, content, token);
+            if (canDeserialize)
+            {
+                return optionData;
+            }
+        }
+
+        throw new InvalidOperationException($"Cannot find proper option data type for entry: `{entry.Name}`");
     }
 }

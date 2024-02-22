@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using Ardalis.SmartEnum;
+using CSharpFunctionalExtensions;
 
 namespace ThisWarOfMine.Domain.Narrative;
 
@@ -13,8 +14,9 @@ public sealed class Language : SmartEnum<Language>
     public string ShortName => Culture.IetfLanguageTag;
 
     private Language(string name, string culture, int value)
-        : base(name, value)
-    {
-        Culture = CultureInfo.GetCultureInfo(culture);
-    }
+        : base(name, value) => Culture = CultureInfo.GetCultureInfo(culture);
+
+    public static Language FromShortName(string shortName) =>
+        List.TryFirst(x => x.ShortName == shortName)
+            .GetValueOrThrow($"Cannot find language by short name: `{shortName}`");
 }

@@ -16,20 +16,13 @@ internal abstract class BaseOptionSerializationStrategy<TOption> : IOptionSerial
     string IOptionSerializationStrategy<TOption>.Serialize(TOption optionData) =>
         $"{Prefix}{Serialize(optionData)}{Environment.NewLine}";
 
-    async Task<Maybe<TOption>> IOptionSerializationStrategy<TOption>.TryDeserialize(
-        ZipArchiveEntry entry,
-        CancellationToken token
-    )
+    Maybe<TOption> IOptionSerializationStrategy<TOption>.TryDeserialize(ZipArchiveEntry entry, string content)
     {
-        await using var stream = entry.Open();
-        using var reader = new StreamReader(stream);
-        var @string = await reader.ReadToEndAsync(token);
-        var index = @string.LastIndexOf(Prefix, StringComparison.Ordinal);
-        if (index == -1)
+        if (content.StartsWith(Prefix))
         {
-            return Maybe.None;
+            return Deserialize(Guid.Parse(entry.Name), int.Parse(entry.Comment), content[Prefix.Length..].Trim());
         }
 
-        return Deserialize(Guid.Parse(entry.Name), int.Parse(entry.Comment), @string[index..].Trim());
+        return Maybe.None;
     }
 }

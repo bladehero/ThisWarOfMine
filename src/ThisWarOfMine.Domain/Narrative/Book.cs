@@ -11,6 +11,7 @@ public sealed class Book : AggregateRoot<Guid>
     private readonly List<Story> _stories;
 
     public string Name { get; private set; } = null!;
+    public IReadOnlyCollection<Story> Stories => _stories.AsReadOnly();
 
     private Book(int capacity)
     {
