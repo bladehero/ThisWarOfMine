@@ -8,7 +8,7 @@ internal interface IOptionSerializationStrategy<TOption> : IOptionSerializationS
     where TOption : IOptionData
 {
     string Serialize(TOption optionData);
-    new Maybe<TOption> TryDeserialize(ZipArchiveEntry entry, string content);
+    Maybe<TOption> TryDeserialize(ZipArchiveEntry entry, string content);
 
     bool IOptionSerializationStrategy.CompatibleFor(IOptionData data) => typeof(TOption) == data.GetType();
 

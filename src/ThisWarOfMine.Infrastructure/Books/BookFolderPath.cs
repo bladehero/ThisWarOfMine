@@ -1,4 +1,6 @@
-﻿namespace ThisWarOfMine.Infrastructure.Books;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ThisWarOfMine.Infrastructure.Books;
 
 public abstract class BookFolderPath
 {
@@ -8,20 +10,20 @@ public abstract class BookFolderPath
 
     private BookFolderPath(string localPath) => _localPath = localPath;
 
-    public static BookFolderPath From(BookFolderSettings settings)
+    private static BookFolderPath From(BookFolderSettings settings)
     {
         var (bookFolderType, localPath) = settings;
         return bookFolderType switch
         {
-            BookFolderType.Absolute => AsAbsolute(localPath),
-            BookFolderType.AppData => AsAppData(localPath),
+            BookFolderType.Absolute => AsAbsolute(localPath!),
+            BookFolderType.AppData => AsAppData(localPath!),
             _ => throw new InvalidOperationException($"Cannot create book folder from settings: `{settings}`")
         };
     }
 
-    public static BookFolderPath AsAbsolute(string path) => new AbsoluteBookFolderPath(path);
+    private static BookFolderPath AsAbsolute(string path) => new AbsoluteBookFolderPath(path);
 
-    public static BookFolderPath AsAppData(string path) => new AppDataBookFolderPath(path);
+    private static BookFolderPath AsAppData(string path) => new AppDataBookFolderPath(path);
 
     public static implicit operator BookFolderPath(string path) => AsAbsolute(path);
 
@@ -55,7 +57,10 @@ public abstract class BookFolderPath
 
     public sealed class BookFolderSettings
     {
+        [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
         public BookFolderType Type { get; set; }
+
+        [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
         public string? LocalPath { get; set; }
 
         public void Deconstruct(out BookFolderType type, out string? localPath)

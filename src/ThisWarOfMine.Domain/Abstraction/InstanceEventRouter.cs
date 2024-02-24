@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Diagnostics.CodeAnalysis;
+using CSharpFunctionalExtensions;
 
 namespace ThisWarOfMine.Domain.Abstraction;
 
@@ -54,6 +55,7 @@ public sealed class InstanceEventRouter
         return handler(@event).MapTry(x => (TValue)x, Error.Because);
     }
 
+    [SuppressMessage("ReSharper", "NotAccessedPositionalProperty.Local")]
     private readonly record struct Key(Type EventType, Maybe<Type> ValueType)
     {
         public static Key From<TEvent>() => new(typeof(TEvent), Maybe.None);

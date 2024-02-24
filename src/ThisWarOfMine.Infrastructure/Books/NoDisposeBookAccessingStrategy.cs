@@ -1,9 +1,8 @@
 ﻿using System.IO.Compression;
-using ThisWarOfMine.Infrastructure.Books;
 
-namespace ThisWarOfMine.Splitter;
+namespace ThisWarOfMine.Infrastructure.Books;
 
-internal sealed class NoDisposeBookAccessingStrategy : IBookAccessingStrategy
+public sealed class NoDisposeBookAccessingStrategy : IBookAccessingStrategy
 {
     private readonly LongWriteOperationSingleBookAccessor _longWriteOperationSingleBookAccessor;
 

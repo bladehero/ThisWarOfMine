@@ -7,10 +7,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CSharpier.MsBuild" Version="0.27.2">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
+      <PackageReference Include="CSharpFunctionalExtensions" Version="2.40.3" />
+      <PackageReference Include="MediatR" Version="12.2.0" />
+      <PackageReference Include="Telegram.Bot" Version="19.0.0" />
     </ItemGroup>
 
 </Project>

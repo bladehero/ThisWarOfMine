@@ -6,6 +6,7 @@ namespace ThisWarOfMine.Infrastructure.Books;
 
 internal sealed class BookNameResolver : IBookNameResolver
 {
+    private const string Zip = "zip";
     private readonly IOptionsSnapshot<BookConfiguration> _options;
 
     public BookNameResolver(IOptionsSnapshot<BookConfiguration> options)
@@ -16,7 +17,7 @@ internal sealed class BookNameResolver : IBookNameResolver
     public string GetFileNameFor(Guid bookId)
     {
         var configuration = _options.Value;
-        var file = Path.ChangeExtension(bookId.ToString(), "zip");
+        var file = Path.ChangeExtension(bookId.ToString(), Zip);
         return Path.Combine(configuration.Folder!.Path, file);
     }
 
@@ -31,5 +32,19 @@ internal sealed class BookNameResolver : IBookNameResolver
         }
 
         return path;
+    }
+
+    public IEnumerable<(Guid, string)> GetPossibleBookArchives()
+    {
+        var configuration = _options.Value;
+        var files = Directory.GetFiles(configuration.Folder!.Path, $"*.{Zip}", SearchOption.TopDirectoryOnly);
+        foreach (var file in files)
+        {
+            var source = Path.GetFileNameWithoutExtension(file);
+            if (Guid.TryParse(source, out var guid))
+            {
+                yield return (guid, file);
+            }
+        }
     }
 }

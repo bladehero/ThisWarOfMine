@@ -1,8 +1,8 @@
 ﻿using System.IO.Compression;
 
-namespace ThisWarOfMine.Splitter;
+namespace ThisWarOfMine.Infrastructure.Books;
 
-internal sealed class LongWriteOperationSingleBookAccessor : IDisposable
+public sealed class LongWriteOperationSingleBookAccessor : IDisposable
 {
     private readonly object _synchronization = new();
     private ZipArchive? _archive;

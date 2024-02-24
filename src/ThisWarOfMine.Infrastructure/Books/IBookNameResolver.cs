@@ -7,4 +7,5 @@ internal interface IBookNameResolver
 {
     string GetFileNameFor(Guid bookId);
     Maybe<string> IfNotExistsGetFileNameFor(Book aggregate);
+    IEnumerable<(Guid, string)> GetPossibleBookArchives();
 }
