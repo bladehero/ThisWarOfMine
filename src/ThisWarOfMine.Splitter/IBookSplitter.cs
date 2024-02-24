@@ -1,6 +1,7 @@
-﻿namespace ThisWarOfMine.Splitter;
-
-public interface IBookSplitter
+﻿namespace ThisWarOfMine.Splitter
 {
-    IAsyncEnumerable<IReadOnlyCollection<string>> SplitAsync(string path, CancellationToken token = default);
+    public interface IBookSplitter
+    {
+        IAsyncEnumerable<IReadOnlyCollection<string>> SplitAsync(string path, CancellationToken token = default);
+    }
 }

@@ -1,14 +1,10 @@
-﻿using Telegram.Bot.Polling;
-
-namespace ThisWarOfMine.Worker.Telegram;
-
-public static class DependencyInjectionExtensions
+﻿namespace ThisWarOfMine.Worker.Telegram
 {
-    public static IServiceCollection AddTelegramWorker(this IServiceCollection services)
+    public static class DependencyInjectionExtensions
     {
-        return services
-            .AddHostedService<Worker>()
-            .AddSingleton<IUpdateHandler, TelegramUpdateHandler>()
-            .AddTransient<INotificationCreator, NotificationCreator>();
+        public static IServiceCollection AddTelegramWorker(this IServiceCollection services)
+        {
+            return services.AddHostedService<Worker>();
+        }
     }
 }

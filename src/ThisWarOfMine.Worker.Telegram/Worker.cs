@@ -1,28 +1,32 @@
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 
-namespace ThisWarOfMine.Worker.Telegram;
-
-public class Worker : BackgroundService
+namespace ThisWarOfMine.Worker.Telegram
 {
-    private readonly ITelegramBotClient _telegramBotClient;
-    private readonly IUpdateHandler _updateHandler;
-    private readonly ILogger<Worker> _logger;
-
-    public Worker(ITelegramBotClient telegramBotClient, IUpdateHandler updateHandler, ILogger<Worker> logger)
+    public class Worker : BackgroundService
     {
-        _telegramBotClient = telegramBotClient;
-        _updateHandler = updateHandler;
-        _logger = logger;
-    }
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+        private readonly ILogger<Worker> _logger;
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        while (!stoppingToken.IsCancellationRequested)
+        public Worker(IServiceScopeFactory serviceScopeFactory, ILogger<Worker> logger)
         {
-            _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-            await _telegramBotClient.ReceiveAsync(_updateHandler, new ReceiverOptions(), stoppingToken);
-            await Task.Delay(1000, stoppingToken);
+            _serviceScopeFactory = serviceScopeFactory;
+            _logger = logger;
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+
+                await using var scope = _serviceScopeFactory.CreateAsyncScope();
+                var client = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
+                var handler = scope.ServiceProvider.GetRequiredService<IUpdateHandler>();
+                await client.ReceiveAsync(handler, new ReceiverOptions(), stoppingToken);
+
+                await Task.Delay(1000, stoppingToken);
+            }
         }
     }
 }

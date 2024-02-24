@@ -1,21 +1,22 @@
 ﻿using System.IO.Compression;
 
-namespace ThisWarOfMine.Infrastructure.Books;
-
-public sealed class LongWriteOperationSingleBookAccessor : IDisposable
+namespace ThisWarOfMine.Infrastructure.Books
 {
-    private readonly object _synchronization = new();
-    private ZipArchive? _archive;
-
-    public ZipArchive Open(string file)
+    public sealed class LongWriteOperationSingleBookAccessor : IDisposable
     {
-        lock (_synchronization)
+        private readonly object _synchronization = new();
+        private ZipArchive? _archive;
+
+        public ZipArchive Open(string file)
         {
-            _archive ??= ZipFile.Open(file, ZipArchiveMode.Update);
+            lock (_synchronization)
+            {
+                _archive ??= ZipFile.Open(file, ZipArchiveMode.Update);
+            }
+
+            return _archive;
         }
 
-        return _archive;
+        public void Dispose() => _archive?.Dispose();
     }
-
-    public void Dispose() => _archive?.Dispose();
 }

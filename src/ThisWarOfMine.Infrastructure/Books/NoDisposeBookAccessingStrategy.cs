@@ -1,19 +1,20 @@
 ﻿using System.IO.Compression;
 
-namespace ThisWarOfMine.Infrastructure.Books;
-
-public sealed class NoDisposeBookAccessingStrategy : IBookAccessingStrategy
+namespace ThisWarOfMine.Infrastructure.Books
 {
-    private readonly LongWriteOperationSingleBookAccessor _longWriteOperationSingleBookAccessor;
-
-    public NoDisposeBookAccessingStrategy(LongWriteOperationSingleBookAccessor longWriteOperationSingleBookAccessor)
+    public sealed class NoDisposeBookAccessingStrategy : IBookAccessingStrategy
     {
-        _longWriteOperationSingleBookAccessor = longWriteOperationSingleBookAccessor;
-    }
+        private readonly LongWriteOperationSingleBookAccessor _longWriteOperationSingleBookAccessor;
 
-    public Task UseAsync(string file, Func<ZipArchive, Task> action)
-    {
-        var archive = _longWriteOperationSingleBookAccessor.Open(file);
-        return action(archive);
+        public NoDisposeBookAccessingStrategy(LongWriteOperationSingleBookAccessor longWriteOperationSingleBookAccessor)
+        {
+            _longWriteOperationSingleBookAccessor = longWriteOperationSingleBookAccessor;
+        }
+
+        public Task UseAsync(string file, Func<ZipArchive, Task> action)
+        {
+            var archive = _longWriteOperationSingleBookAccessor.Open(file);
+            return action(archive);
+        }
     }
 }

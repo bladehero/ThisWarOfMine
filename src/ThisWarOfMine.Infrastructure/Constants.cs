@@ -1,6 +1,7 @@
-﻿namespace ThisWarOfMine.Infrastructure;
-
-public static class Constants
+﻿namespace ThisWarOfMine.Infrastructure
 {
-    public const string BookOfScripts = "Book of Scripts";
+    public static class Constants
+    {
+        public const string BookOfScripts = "Book of Scripts";
+    }
 }

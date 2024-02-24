@@ -1,20 +1,21 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Telegram.Bot;
 
-namespace ThisWarOfMine.Infrastructure.Telegram;
-
-internal sealed class TelegramBotConfiguration
+namespace ThisWarOfMine.Infrastructure.Telegram
 {
-    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-    public string? Token { get; set; }
-
-    public static implicit operator TelegramBotClientOptions(TelegramBotConfiguration configuration)
+    internal sealed class TelegramBotConfiguration
     {
-        if (string.IsNullOrWhiteSpace(configuration.Token))
-        {
-            throw new InvalidOperationException("Bot should never has empty token");
-        }
+        [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+        public string? Token { get; set; }
 
-        return new TelegramBotClientOptions(configuration.Token);
+        public static implicit operator TelegramBotClientOptions(TelegramBotConfiguration configuration)
+        {
+            if (string.IsNullOrWhiteSpace(configuration.Token))
+            {
+                throw new InvalidOperationException("Bot should never has empty token");
+            }
+
+            return new TelegramBotClientOptions(configuration.Token);
+        }
     }
 }

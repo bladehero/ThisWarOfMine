@@ -1,9 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
 using ThisWarOfMine.Domain.Narrative.Events.Options;
 
-namespace ThisWarOfMine.Splitter.Options;
-
-internal interface IOptionParsingStrategy
+namespace ThisWarOfMine.Splitter.Options
 {
-    Maybe<IOptionData> TryParse(string optionRow, int order);
+    internal interface IOptionParsingStrategy
+    {
+        Maybe<IOptionData> TryParse(string optionRow, int order);
+    }
 }

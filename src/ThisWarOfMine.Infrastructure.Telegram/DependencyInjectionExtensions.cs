@@ -2,29 +2,35 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Telegram.Bot;
+using Telegram.Bot.Polling;
 using ThisWarOfMine.Common;
+using ThisWarOfMine.Infrastructure.Telegram.Notification;
 
-namespace ThisWarOfMine.Infrastructure.Telegram;
-
-public static class DependencyInjectionExtensions
+namespace ThisWarOfMine.Infrastructure.Telegram
 {
-    public static IServiceCollection AddTelegramInfrastructure(
-        this IServiceCollection services,
-        IConfiguration configuration,
-        Action<TelegramBotClient>? configure = null
-    )
+    public static class DependencyInjectionExtensions
     {
-        return services
-            .AddConfiguration<TelegramBotConfiguration>(configuration)
-            .AddSingleton<ITelegramBotClient>(ClientFactory(configure));
-    }
-
-    private static Func<IServiceProvider, TelegramBotClient> ClientFactory(Action<TelegramBotClient>? configure) =>
-        provider =>
+        public static IServiceCollection AddTelegramInfrastructure(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            Action<TelegramBotClient>? configure = null
+        )
         {
-            var options = provider.GetRequiredService<IOptions<TelegramBotConfiguration>>();
-            var client = new TelegramBotClient(options.Value);
-            configure?.Invoke(client);
-            return client;
-        };
+            return services
+                .AddConfiguration<TelegramBotConfiguration>(configuration)
+                .AddSingleton<ITelegramBotClient>(ClientFactory(configure))
+                .AddSingleton<IUpdateHandler, TelegramUpdateHandler>()
+                .AddTransient<INotificationCreator, NotificationCreator>();
+            ;
+        }
+
+        private static Func<IServiceProvider, TelegramBotClient> ClientFactory(Action<TelegramBotClient>? configure) =>
+            provider =>
+            {
+                var options = provider.GetRequiredService<IOptions<TelegramBotConfiguration>>();
+                var client = new TelegramBotClient(options.Value);
+                configure?.Invoke(client);
+                return client;
+            };
+    }
 }

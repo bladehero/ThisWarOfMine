@@ -2,18 +2,19 @@
 using Microsoft.Extensions.DependencyInjection;
 using ThisWarOfMine.Application.Telegram.Abstraction;
 
-namespace ThisWarOfMine.Application.Telegram;
-
-public static class DependencyInjectionExtensions
+namespace ThisWarOfMine.Application.Telegram
 {
-    private static readonly Assembly ThisAssembly = typeof(DependencyInjectionExtensions).Assembly;
-
-    public static IServiceCollection AddTelegramApplication(this IServiceCollection services)
+    public static class DependencyInjectionExtensions
     {
-        return services.AddMediatR(configuration =>
+        private static readonly Assembly ThisAssembly = typeof(DependencyInjectionExtensions).Assembly;
+
+        public static IServiceCollection AddTelegramApplication(this IServiceCollection services)
         {
-            configuration.RegisterServicesFromAssembly(ThisAssembly);
-            configuration.NotificationPublisherType = typeof(TaskWhenAllOrDefaultTelegramNotificationPublisher);
-        });
+            return services.AddMediatR(configuration =>
+            {
+                configuration.RegisterServicesFromAssembly(ThisAssembly);
+                configuration.NotificationPublisherType = typeof(TaskWhenAllOrDefaultTelegramNotificationPublisher);
+            });
+        }
     }
 }

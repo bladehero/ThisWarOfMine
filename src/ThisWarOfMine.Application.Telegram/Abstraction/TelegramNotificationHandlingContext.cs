@@ -1,15 +1,19 @@
 ﻿using Telegram.Bot;
 
-namespace ThisWarOfMine.Application.Telegram.Abstraction;
-
-internal sealed class TelegramNotificationHandlingContext<T>
+namespace ThisWarOfMine.Application.Telegram.Abstraction
 {
-    public TelegramNotification<T> TelegramNotification { get; }
-    public ITelegramBotClient Client { get; }
-
-    public TelegramNotificationHandlingContext(TelegramNotification<T> telegramNotification, ITelegramBotClient client)
+    internal sealed class TelegramNotificationHandlingContext<T>
     {
-        TelegramNotification = telegramNotification;
-        Client = client;
+        public TelegramNotification<T> TelegramNotification { get; }
+        public ITelegramBotClient Client { get; }
+
+        public TelegramNotificationHandlingContext(
+            TelegramNotification<T> telegramNotification,
+            ITelegramBotClient client
+        )
+        {
+            TelegramNotification = telegramNotification;
+            Client = client;
+        }
     }
 }

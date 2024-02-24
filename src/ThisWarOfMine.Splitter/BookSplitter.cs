@@ -1,64 +1,65 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
-namespace ThisWarOfMine.Splitter;
-
-internal sealed partial class BookSplitter : IBookSplitter
+namespace ThisWarOfMine.Splitter
 {
-    private const int RegularStoryTextRowsCount = 8;
-    private const int BufferSize = 1024;
-    private static readonly Regex OnlyNumberRule = GetNumberOnlyRegex();
-
-    public async IAsyncEnumerable<IReadOnlyCollection<string>> SplitAsync(
-        string path,
-        [EnumeratorCancellation] CancellationToken token = default
-    )
+    internal sealed partial class BookSplitter : IBookSplitter
     {
-        await using var stream = BookStream(path);
-        using var reader = new StreamReader(stream);
+        private const int RegularStoryTextRowsCount = 8;
+        private const int BufferSize = 1024;
+        private static readonly Regex OnlyNumberRule = GetNumberOnlyRegex();
 
-        var rows = new List<string?>(RegularStoryTextRowsCount);
-        while (!token.IsCancellationRequested)
+        public async IAsyncEnumerable<IReadOnlyCollection<string>> SplitAsync(
+            string path,
+            [EnumeratorCancellation] CancellationToken token = default
+        )
         {
-            var line = (await reader.ReadLineAsync(token))?.Trim();
+            await using var stream = BookStream(path);
+            using var reader = new StreamReader(stream);
 
-            rows.Add(line);
-
-            if (rows.Count < 3)
+            var rows = new List<string?>(RegularStoryTextRowsCount);
+            while (!token.IsCancellationRequested)
             {
-                continue;
-            }
+                var line = (await reader.ReadLineAsync(token))?.Trim();
 
-            if (LineIsNotANumber(line))
-            {
-                continue;
-            }
+                rows.Add(line);
 
-            // TODO: Refactor (maybe remove RemoveAt method if possible)
-            rows.RemoveAt(rows.Count - 1);
-            yield return rows.ToArray()!;
-            rows.Clear();
-            rows.Add(line);
+                if (rows.Count < 3)
+                {
+                    continue;
+                }
 
-            if (line is null)
-            {
-                yield break;
+                if (LineIsNotANumber(line))
+                {
+                    continue;
+                }
+
+                // TODO: Refactor (maybe remove RemoveAt method if possible)
+                rows.RemoveAt(rows.Count - 1);
+                yield return rows.ToArray()!;
+                rows.Clear();
+                rows.Add(line);
+
+                if (line is null)
+                {
+                    yield break;
+                }
             }
         }
+
+        private static bool LineIsNotANumber(string? line) => line is not null && !OnlyNumberRule.IsMatch(line);
+
+        private static FileStream BookStream(string path) =>
+            new(
+                path,
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.Read,
+                BufferSize,
+                FileOptions.Asynchronous | FileOptions.SequentialScan
+            );
+
+        [GeneratedRegex("^\\s*\\d+\\s*$")]
+        private static partial Regex GetNumberOnlyRegex();
     }
-
-    private static bool LineIsNotANumber(string? line) => line is not null && !OnlyNumberRule.IsMatch(line);
-
-    private static FileStream BookStream(string path) =>
-        new(
-            path,
-            FileMode.Open,
-            FileAccess.Read,
-            FileShare.Read,
-            BufferSize,
-            FileOptions.Asynchronous | FileOptions.SequentialScan
-        );
-
-    [GeneratedRegex("^\\s*\\d+\\s*$")]
-    private static partial Regex GetNumberOnlyRegex();
 }

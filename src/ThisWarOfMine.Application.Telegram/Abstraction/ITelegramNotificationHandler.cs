@@ -1,7 +1,8 @@
-﻿namespace ThisWarOfMine.Application.Telegram.Abstraction;
-
-public interface ITelegramNotificationHandler
+﻿namespace ThisWarOfMine.Application.Telegram.Abstraction
 {
-    Task<bool> CanHandleAsync(CancellationToken token);
-    Task HandleAsync(CancellationToken token);
+    public interface ITelegramNotificationHandler
+    {
+        Task<bool> CanHandleAsync(CancellationToken token);
+        Task HandleAsync(CancellationToken token);
+    }
 }
