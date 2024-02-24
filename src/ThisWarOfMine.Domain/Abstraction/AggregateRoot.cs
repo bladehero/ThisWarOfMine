@@ -1,38 +1,39 @@
 using CSharpFunctionalExtensions;
 
-namespace ThisWarOfMine.Domain.Abstraction;
-
-public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot
-    where TKey : IComparable<TKey>
+namespace ThisWarOfMine.Domain.Abstraction
 {
-    private readonly List<IBaseDomainEvent> _changes = new();
-
-    public bool HasChanges => _changes.Any();
-
-    public IReadOnlyCollection<IBaseDomainEvent> GetUncommittedChanges() => _changes.AsReadOnly();
-
-    public UnitResult<Error> Load(IEnumerable<IBaseDomainEvent> history)
+    public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot
+        where TKey : IComparable<TKey>
     {
-        ArgumentNullException.ThrowIfNull(history);
+        private readonly List<IBaseDomainEvent> _changes = new();
 
-        return history.Select(@event => ApplyChange(@event, false)).Combine();
-    }
+        public bool HasChanges => _changes.Any();
 
-    public void Commit() => _changes.Clear();
+        public IReadOnlyCollection<IBaseDomainEvent> GetUncommittedChanges() => _changes.AsReadOnly();
 
-    protected UnitResult<Error> ApplyChange<TEvent>(TEvent @event, bool isNew = true)
-        where TEvent : IBaseDomainEvent
-    {
-        ArgumentNullException.ThrowIfNull(@event);
+        public UnitResult<Error> Load(IEnumerable<IBaseDomainEvent> history)
+        {
+            ArgumentNullException.ThrowIfNull(history);
 
-        return Router.Route(@event).TapIf(isNew, () => _changes.Add(@event));
-    }
+            return history.Select(@event => ApplyChange(@event, false)).Combine();
+        }
 
-    protected Result<TValue, Error> ApplyChange<TEvent, TValue>(TEvent @event, bool isNew = true)
-        where TEvent : IBaseDomainEvent
-    {
-        ArgumentNullException.ThrowIfNull(@event);
+        public void Commit() => _changes.Clear();
 
-        return Router.Route<TEvent, TValue>(@event).TapIf(isNew, () => _changes.Add(@event));
+        protected UnitResult<Error> ApplyChange<TEvent>(TEvent @event, bool isNew = true)
+            where TEvent : IBaseDomainEvent
+        {
+            ArgumentNullException.ThrowIfNull(@event);
+
+            return Router.Route(@event).TapIf(isNew, () => _changes.Add(@event));
+        }
+
+        protected Result<TValue, Error> ApplyChange<TEvent, TValue>(TEvent @event, bool isNew = true)
+            where TEvent : IBaseDomainEvent
+        {
+            ArgumentNullException.ThrowIfNull(@event);
+
+            return Router.Route<TEvent, TValue>(@event).TapIf(isNew, () => _changes.Add(@event));
+        }
     }
 }

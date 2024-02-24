@@ -1,7 +1,8 @@
-﻿namespace ThisWarOfMine.Splitter.Options;
-
-internal static class Constants
+﻿namespace ThisWarOfMine.Splitter.Options
 {
-    internal const string BackToGameMarker = "НАЗАД В ИГРУ";
-    internal const char OptionMarker = '?';
+    internal static class Constants
+    {
+        internal const string BackToGameMarker = "НАЗАД В ИГРУ";
+        internal const char OptionMarker = '?';
+    }
 }

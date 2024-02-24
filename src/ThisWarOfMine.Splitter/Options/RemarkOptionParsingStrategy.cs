@@ -3,28 +3,29 @@ using CSharpFunctionalExtensions;
 using ThisWarOfMine.Common.Wrappers;
 using ThisWarOfMine.Domain.Narrative.Events.Options;
 
-namespace ThisWarOfMine.Splitter.Options;
-
-internal sealed partial class RemarkOptionParsingStrategy : IOptionParsingStrategy
+namespace ThisWarOfMine.Splitter.Options
 {
-    private static readonly Regex StartFromQuestionMarkRule = GetStartFromQuestionMarkRegex();
-    private readonly IGuidProvider _guidProvider;
-
-    public RemarkOptionParsingStrategy(IGuidProvider guidProvider)
+    internal sealed partial class RemarkOptionParsingStrategy : IOptionParsingStrategy
     {
-        _guidProvider = guidProvider;
-    }
+        private static readonly Regex StartFromQuestionMarkRule = GetStartFromQuestionMarkRegex();
+        private readonly IGuidProvider _guidProvider;
 
-    public Maybe<IOptionData> TryParse(string optionRow, int order)
-    {
-        if (StartFromQuestionMarkRule.IsMatch(optionRow))
+        public RemarkOptionParsingStrategy(IGuidProvider guidProvider)
         {
-            return Maybe.None;
+            _guidProvider = guidProvider;
         }
 
-        return new RemarkOptionData(_guidProvider.NewGuid(), order, optionRow);
-    }
+        public Maybe<IOptionData> TryParse(string optionRow, int order)
+        {
+            if (StartFromQuestionMarkRule.IsMatch(optionRow))
+            {
+                return Maybe.None;
+            }
 
-    [GeneratedRegex("^\\s*\\?\\s*")]
-    private static partial Regex GetStartFromQuestionMarkRegex();
+            return new RemarkOptionData(_guidProvider.NewGuid(), order, optionRow);
+        }
+
+        [GeneratedRegex("^\\s*\\?\\s*")]
+        private static partial Regex GetStartFromQuestionMarkRegex();
+    }
 }

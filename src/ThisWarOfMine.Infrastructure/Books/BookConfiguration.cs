@@ -1,6 +1,7 @@
-﻿namespace ThisWarOfMine.Infrastructure.Books;
-
-internal sealed class BookConfiguration
+﻿namespace ThisWarOfMine.Infrastructure.Books
 {
-    public BookFolderPath? Folder { get; set; }
+    internal sealed class BookConfiguration
+    {
+        public BookFolderPath? Folder { get; set; }
+    }
 }

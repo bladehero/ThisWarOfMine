@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace ThisWarOfMine.Infrastructure.ChatGpt;
-
-public sealed class ChatGptConfiguration
+namespace ThisWarOfMine.Infrastructure.ChatGpt
 {
-    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-    public string? SecretKey { get; set; }
+    public sealed class ChatGptConfiguration
+    {
+        [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
+        public string? SecretKey { get; set; }
+    }
 }

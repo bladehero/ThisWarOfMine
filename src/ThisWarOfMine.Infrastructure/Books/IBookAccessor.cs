@@ -1,8 +1,9 @@
 using System.IO.Compression;
 
-namespace ThisWarOfMine.Infrastructure.Books;
-
-internal interface IBookAccessor
+namespace ThisWarOfMine.Infrastructure.Books
 {
-    Task UseAsync(Guid bookId, Func<ZipArchive, Task> configure);
+    internal interface IBookAccessor
+    {
+        Task UseAsync(Guid bookId, Func<ZipArchive, Task> configure);
+    }
 }

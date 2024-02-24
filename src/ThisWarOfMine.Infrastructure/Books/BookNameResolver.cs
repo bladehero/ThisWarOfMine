@@ -2,48 +2,49 @@
 using Microsoft.Extensions.Options;
 using ThisWarOfMine.Domain.Narrative;
 
-namespace ThisWarOfMine.Infrastructure.Books;
-
-internal sealed class BookNameResolver : IBookNameResolver
+namespace ThisWarOfMine.Infrastructure.Books
 {
-    private const string Zip = "zip";
-    private readonly IOptionsSnapshot<BookConfiguration> _options;
-
-    public BookNameResolver(IOptionsSnapshot<BookConfiguration> options)
+    internal sealed class BookNameResolver : IBookNameResolver
     {
-        _options = options;
-    }
+        private const string Zip = "zip";
+        private readonly IOptionsSnapshot<BookConfiguration> _options;
 
-    public string GetFileNameFor(Guid bookId)
-    {
-        var configuration = _options.Value;
-        var file = Path.ChangeExtension(bookId.ToString(), Zip);
-        return Path.Combine(configuration.Folder!.Path, file);
-    }
-
-    public Maybe<string> IfNotExistsGetFileNameFor(Book aggregate)
-    {
-        var configuration = _options.Value;
-        Directory.CreateDirectory(configuration.Folder!.Path);
-        var path = GetFileNameFor(aggregate.Id);
-        if (File.Exists(path))
+        public BookNameResolver(IOptionsSnapshot<BookConfiguration> options)
         {
-            return Maybe.None;
+            _options = options;
         }
 
-        return path;
-    }
-
-    public IEnumerable<(Guid, string)> GetPossibleBookArchives()
-    {
-        var configuration = _options.Value;
-        var files = Directory.GetFiles(configuration.Folder!.Path, $"*.{Zip}", SearchOption.TopDirectoryOnly);
-        foreach (var file in files)
+        public string GetFileNameFor(Guid bookId)
         {
-            var source = Path.GetFileNameWithoutExtension(file);
-            if (Guid.TryParse(source, out var guid))
+            var configuration = _options.Value;
+            var file = Path.ChangeExtension(bookId.ToString(), Zip);
+            return Path.Combine(configuration.Folder!.Path, file);
+        }
+
+        public Maybe<string> IfNotExistsGetFileNameFor(Book aggregate)
+        {
+            var configuration = _options.Value;
+            Directory.CreateDirectory(configuration.Folder!.Path);
+            var path = GetFileNameFor(aggregate.Id);
+            if (File.Exists(path))
             {
-                yield return (guid, file);
+                return Maybe.None;
+            }
+
+            return path;
+        }
+
+        public IEnumerable<(Guid, string)> GetPossibleBookArchives()
+        {
+            var configuration = _options.Value;
+            var files = Directory.GetFiles(configuration.Folder!.Path, $"*.{Zip}", SearchOption.TopDirectoryOnly);
+            foreach (var file in files)
+            {
+                var source = Path.GetFileNameWithoutExtension(file);
+                if (Guid.TryParse(source, out var guid))
+                {
+                    yield return (guid, file);
+                }
             }
         }
     }
