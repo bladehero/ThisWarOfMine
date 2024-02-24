@@ -41,16 +41,33 @@ internal sealed class BookZipArchiveRepository : DispatchableRepository<Book, Gu
     public override Task<Result<Book, Error>> LoadAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var file = _bookNameResolver.GetFileNameFor(id);
-        var archive = ZipFile.OpenRead(file);
+        using var archive = ZipFile.OpenRead(file);
+        return LoadAsync(id, archive, cancellationToken);
+    }
+
+    public async Task<Result<Book, Error>> FindByNameAsync(string name, CancellationToken cancellationToken = default)
+    {
+        foreach (var (guid, file) in _bookNameResolver.GetPossibleBookArchives())
+        {
+            using var archive = ZipFile.OpenRead(file);
+            if (archive.Comment == name)
+            {
+                return await LoadAsync(guid, archive, cancellationToken);
+            }
+        }
+
+        return Error.Because($"Cannot find book with a name: {name}");
+    }
+
+    private Task<Result<Book, Error>> LoadAsync(Guid id, ZipArchive archive, CancellationToken cancellationToken)
+    {
         var sections = GetSections();
         return Book.Create(id, archive.Comment, sections.Length)
             .Bind(LoadingStories)
             .Bind(LoadingAlternatives)
-            .Tap(x =>
-            {
-                x.Commit();
-                archive.Dispose();
-            });
+            .Tap(x => x.Commit());
+
+        #region Local Functions
 
         Section[] GetSections() =>
             archive
@@ -116,7 +133,11 @@ internal sealed class BookZipArchiveRepository : DispatchableRepository<Book, Gu
 
             return Result.Combine(container).Map(() => book);
         }
+
+        #endregion
     }
+
+    #region Helpers
 
     private static async Task<string> GetTextAsync(ZipArchiveEntry entry, CancellationToken cancellationToken)
     {
@@ -163,4 +184,6 @@ internal sealed class BookZipArchiveRepository : DispatchableRepository<Book, Gu
             return OptionIds?.Select(optionId => $"{baseString}options/{optionId}") ?? Array.Empty<string>();
         }
     }
+
+    #endregion
 }

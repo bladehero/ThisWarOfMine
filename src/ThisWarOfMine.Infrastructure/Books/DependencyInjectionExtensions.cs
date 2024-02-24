@@ -3,14 +3,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ThisWarOfMine.Common;
 using ThisWarOfMine.Domain.Narrative;
-using ThisWarOfMine.Infrastructure.Books;
 using ThisWarOfMine.Infrastructure.Books.Options;
 
-namespace ThisWarOfMine.Infrastructure;
+namespace ThisWarOfMine.Infrastructure.Books;
 
 public static class DependencyInjectionExtensions
 {
-    public static IServiceCollection AddInfrastructure(
+    public static IServiceCollection AddBookInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration,
         Assembly[] assemblies

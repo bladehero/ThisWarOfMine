@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Diagnostics.CodeAnalysis;
+using CSharpFunctionalExtensions;
 using ThisWarOfMine.Domain.Abstraction;
 using ThisWarOfMine.Domain.Narrative.Events;
 
@@ -16,6 +17,7 @@ public sealed class Story : Abstraction.Entity<StoryNumber>
             .TryFirst(x => x.Original.HasValue)
             .Value.Original.GetValueOrThrow("Cannot get original source as it's not been initialized yet");
 
+    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     public Book Book { get; private init; }
 
     private Story(Book book)
