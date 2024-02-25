@@ -1,7 +1,6 @@
-namespace ThisWarOfMine.Common.Wrappers
+namespace ThisWarOfMine.Common.Wrappers;
+
+public interface IGuidProvider : IWrapper
 {
-    public interface IGuidProvider : IWrapper
-    {
-        Guid NewGuid();
-    }
+    Guid NewGuid();
 }

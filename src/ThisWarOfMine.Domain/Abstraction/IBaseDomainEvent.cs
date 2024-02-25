@@ -1,9 +1,8 @@
 using MediatR;
 
-namespace ThisWarOfMine.Domain.Abstraction
+namespace ThisWarOfMine.Domain.Abstraction;
+
+public interface IBaseDomainEvent : INotification
 {
-    public interface IBaseDomainEvent : INotification
-    {
-        DateTime Timestamp { get; }
-    }
+    DateTime Timestamp { get; }
 }

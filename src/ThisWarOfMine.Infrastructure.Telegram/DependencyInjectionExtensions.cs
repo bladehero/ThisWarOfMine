@@ -1,36 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Telegram.Bot;
-using Telegram.Bot.Polling;
-using ThisWarOfMine.Common;
-using ThisWarOfMine.Infrastructure.Telegram.Notification;
+using ThisWarOfMine.Infrastructure.Telegram.Notifications;
+using ThisWarOfMine.Infrastructure.Telegram.Resources;
+using ThisWarOfMine.Infrastructure.Telegram.States;
 
-namespace ThisWarOfMine.Infrastructure.Telegram
+namespace ThisWarOfMine.Infrastructure.Telegram;
+
+public static class DependencyInjectionExtensions
 {
-    public static class DependencyInjectionExtensions
-    {
-        public static IServiceCollection AddTelegramInfrastructure(
-            this IServiceCollection services,
-            IConfiguration configuration,
-            Action<TelegramBotClient>? configure = null
-        )
-        {
-            return services
-                .AddConfiguration<TelegramBotConfiguration>(configuration)
-                .AddSingleton<ITelegramBotClient>(ClientFactory(configure))
-                .AddSingleton<IUpdateHandler, TelegramUpdateHandler>()
-                .AddTransient<INotificationCreator, NotificationCreator>();
-            ;
-        }
-
-        private static Func<IServiceProvider, TelegramBotClient> ClientFactory(Action<TelegramBotClient>? configure) =>
-            provider =>
-            {
-                var options = provider.GetRequiredService<IOptions<TelegramBotConfiguration>>();
-                var client = new TelegramBotClient(options.Value);
-                configure?.Invoke(client);
-                return client;
-            };
-    }
+    public static IServiceCollection AddTelegramInfrastructure(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        Action<TelegramBotClient>? configure = null
+    ) => services.AddTelegramHandling(configuration, configure).AddTelegramResources().AddTelegramStates();
 }

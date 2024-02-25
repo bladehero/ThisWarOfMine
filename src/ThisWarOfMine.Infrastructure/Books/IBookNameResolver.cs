@@ -1,12 +1,11 @@
 using CSharpFunctionalExtensions;
 using ThisWarOfMine.Domain.Narrative;
 
-namespace ThisWarOfMine.Infrastructure.Books
+namespace ThisWarOfMine.Infrastructure.Books;
+
+internal interface IBookNameResolver
 {
-    internal interface IBookNameResolver
-    {
-        string GetFileNameFor(Guid bookId);
-        Maybe<string> IfNotExistsGetFileNameFor(Book aggregate);
-        IEnumerable<(Guid, string)> GetPossibleBookArchives();
-    }
+    string GetFileNameFor(Guid bookId);
+    Maybe<string> IfNotExistsGetFileNameFor(Book aggregate);
+    IEnumerable<(Guid, string)> GetPossibleBookArchives();
 }

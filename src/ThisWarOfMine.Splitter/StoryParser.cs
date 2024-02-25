@@ -2,109 +2,107 @@
 using ThisWarOfMine.Domain.Narrative;
 using ThisWarOfMine.Splitter.Options;
 
-namespace ThisWarOfMine.Splitter
+namespace ThisWarOfMine.Splitter;
+
+internal sealed class StoryParser : IStoryParser
 {
-    internal sealed class StoryParser : IStoryParser
+    private readonly IOptionParser _optionParser;
+
+    public StoryParser(IOptionParser optionParser)
     {
-        private readonly IOptionParser _optionParser;
+        _optionParser = optionParser;
+    }
 
-        public StoryParser(IOptionParser optionParser)
+    public Result<Story> ParseIn(Book book, Language language, IReadOnlyCollection<string> rows)
+    {
+        var body = rows.Skip(1).ToArray();
+        var indexOfFirstOption = IndexOfFirstOption(body);
+
+        return rows.TryFirst()
+            .ToResult("Rows are empty")
+            .Bind(ParsingStoryNumber)
+            .Bind(AddingNewStory)
+            .Bind(TranslatingStory)
+            .Bind(WritingStory)
+            .Bind(DefiningOptions);
+
+        Result<short> AddingNewStory(short number)
         {
-            _optionParser = optionParser;
+            return book.AddStory(number).Map(_ => number).MapError(x => x.Message);
         }
 
-        public Result<Story> ParseIn(Book book, Language language, IReadOnlyCollection<string> rows)
+        Result<short> TranslatingStory(short number)
         {
-            var body = rows.Skip(1).ToArray();
-            var indexOfFirstOption = IndexOfFirstOption(body);
+            return book.TranslateStory(number, language).Map(_ => number).MapError(x => x.Message);
+        }
 
-            return rows.TryFirst()
-                .ToResult("Rows are empty")
-                .Bind(ParsingStoryNumber)
-                .Bind(AddingNewStory)
-                .Bind(TranslatingStory)
-                .Bind(WritingStory)
-                .Bind(DefiningOptions);
+        Result<(short StoryNumber, Guid AlternativeId)> WritingStory(short number)
+        {
+            var contentRows = body[..indexOfFirstOption];
 
-            Result<short> AddingNewStory(short number)
+            return Result
+                .SuccessIf(contentRows.Any, "Content of the story should be always present")
+                .Bind(AddingNewAlternative)
+                .Map(alternative => (number, alternative.Id));
+
+            Result<Alternative> AddingNewAlternative()
             {
-                return book.AddStory(number).Map(_ => number).MapError(x => x.Message);
-            }
-
-            Result<short> TranslatingStory(short number)
-            {
-                return book.TranslateStory(number, language).Map(_ => number).MapError(x => x.Message);
-            }
-
-            Result<(short StoryNumber, Guid AlternativeId)> WritingStory(short number)
-            {
-                var contentRows = body[..indexOfFirstOption];
-
-                return Result
-                    .SuccessIf(contentRows.Any, "Content of the story should be always present")
-                    .Bind(AddingNewAlternative)
-                    .Map(alternative => (number, alternative.Id));
-
-                Result<Alternative> AddingNewAlternative()
-                {
-                    return book.AddTranslationAlternative(
-                            number,
-                            language,
-                            Guid.NewGuid(),
-                            string.Join(Environment.NewLine, contentRows)
-                        )
-                        .MapError(x => x.Message);
-                }
-            }
-
-            Result<Story> DefiningOptions((short Number, Guid AlternativeId) data)
-            {
-                var (number, alternativeId) = data;
-                var optionRows = body[indexOfFirstOption..];
-                if (!optionRows.Any())
-                {
-                    throw new InvalidOperationException("The story should have at least one option");
-                }
-
-                var order = 0;
-                foreach (var optionRow in optionRows)
-                {
-                    var result = _optionParser
-                        .Parse(optionRow, order)
-                        .Bind(optionData =>
-                            book.AddAlternativeOption(number, language, alternativeId, optionData)
-                                .MapError(x => x.Message)
-                        );
-
-                    if (result.IsFailure)
-                    {
-                        return Result.Failure<Story>(result.Error);
-                    }
-
-                    order++;
-                }
-
-                return book.StoryBy(number).MapError(x => x.Message);
+                return book.AddTranslationAlternative(
+                        number,
+                        language,
+                        Guid.NewGuid(),
+                        string.Join(Environment.NewLine, contentRows)
+                    )
+                    .MapError(x => x.Message);
             }
         }
 
-        private static Result<short> ParsingStoryNumber(string source) =>
-            Result.SuccessIf(short.TryParse(source, out var number), number, $"Cannot parse title as number: {source}");
-
-        private static int IndexOfFirstOption(IReadOnlyList<string> body)
+        Result<Story> DefiningOptions((short Number, Guid AlternativeId) data)
         {
-            var index = 0;
-            while (index < body.Count)
+            var (number, alternativeId) = data;
+            var optionRows = body[indexOfFirstOption..];
+            if (!optionRows.Any())
             {
-                if (body[index].StartsWith(Constants.OptionMarker))
-                {
-                    return index;
-                }
-
-                index++;
+                throw new InvalidOperationException("The story should have at least one option");
             }
 
-            return -1;
+            var order = 0;
+            foreach (var optionRow in optionRows)
+            {
+                var result = _optionParser
+                    .Parse(optionRow, order)
+                    .Bind(optionData =>
+                        book.AddAlternativeOption(number, language, alternativeId, optionData).MapError(x => x.Message)
+                    );
+
+                if (result.IsFailure)
+                {
+                    return Result.Failure<Story>(result.Error);
+                }
+
+                order++;
+            }
+
+            return book.StoryBy(number).MapError(x => x.Message);
         }
+    }
+
+    private static Result<short> ParsingStoryNumber(string source) =>
+        Result.SuccessIf(short.TryParse(source, out var number), number, $"Cannot parse title as number: {source}");
+
+    private static int IndexOfFirstOption(IReadOnlyList<string> body)
+    {
+        var index = 0;
+        while (index < body.Count)
+        {
+            if (body[index].StartsWith(Constants.OptionMarker))
+            {
+                return index;
+            }
+
+            index++;
+        }
+
+        return -1;
     }
 }

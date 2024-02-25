@@ -1,8 +1,7 @@
-﻿namespace ThisWarOfMine.Domain.Narrative.Events.Options
+﻿namespace ThisWarOfMine.Domain.Narrative.Events.Options;
+
+public interface IOptionData
 {
-    public interface IOptionData
-    {
-        Guid Id { get; }
-        int Order { get; }
-    }
+    Guid Id { get; }
+    int Order { get; }
 }
