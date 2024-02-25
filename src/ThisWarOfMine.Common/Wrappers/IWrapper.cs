@@ -1,4 +1,3 @@
-﻿namespace ThisWarOfMine.Common.Wrappers
-{
-    public interface IWrapper { }
-}
+﻿namespace ThisWarOfMine.Common.Wrappers;
+
+public interface IWrapper { }

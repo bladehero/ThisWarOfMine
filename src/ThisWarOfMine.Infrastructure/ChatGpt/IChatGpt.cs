@@ -1,7 +1,6 @@
-﻿namespace ThisWarOfMine.Infrastructure.ChatGpt
+﻿namespace ThisWarOfMine.Infrastructure.ChatGpt;
+
+public interface IChatGpt
 {
-    public interface IChatGpt
-    {
-        Task<string> AskAsync(string value);
-    }
+    Task<string> AskAsync(string value);
 }

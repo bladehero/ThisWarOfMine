@@ -6,13 +6,11 @@ using ThisWarOfMine.Worker.Telegram;
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(
         (context, services) =>
-        {
             services
                 .AddCommonWrappers()
                 .AddTelegramApplication()
                 .AddTelegramInfrastructure(context.Configuration)
-                .AddTelegramWorker();
-        }
+                .AddTelegramWorker()
     )
     .Build();
 

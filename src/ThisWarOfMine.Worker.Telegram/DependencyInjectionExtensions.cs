@@ -1,10 +1,9 @@
-﻿namespace ThisWarOfMine.Worker.Telegram
+﻿namespace ThisWarOfMine.Worker.Telegram;
+
+public static class DependencyInjectionExtensions
 {
-    public static class DependencyInjectionExtensions
+    public static IServiceCollection AddTelegramWorker(this IServiceCollection services)
     {
-        public static IServiceCollection AddTelegramWorker(this IServiceCollection services)
-        {
-            return services.AddHostedService<Worker>();
-        }
+        return services.AddHostedService<Worker>();
     }
 }

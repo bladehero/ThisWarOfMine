@@ -9,13 +9,33 @@
     <ItemGroup>
         <PackageReference Include="MediatR" Version="12.2.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.16" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+        <PackageReference Include="Scrutor" Version="4.2.2" />
         <PackageReference Include="Telegram.Bot" Version="19.0.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\ThisWarOfMine.Application.Telegram\ThisWarOfMine.Application.Telegram.csproj" />
         <ProjectReference Include="..\ThisWarOfMine.Common\ThisWarOfMine.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Update="Resources\Messages\Responses.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Responses.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <Compile Update="Resources\Messages\Responses.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Responses.resx</DependentUpon>
+        </Compile>
+        <EmbeddedResource Update="Resources\Messages\Responses.ru.resx">
+          <DependentUpon>Responses.resx</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Resources\Messages\Responses.uk.resx">
+          <DependentUpon>Responses.resx</DependentUpon>
+        </EmbeddedResource>
     </ItemGroup>
 
 </Project>

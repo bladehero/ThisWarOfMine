@@ -1,25 +1,24 @@
 ﻿using System.Collections.Immutable;
 
-namespace ThisWarOfMine.Domain.Narrative.Options
+namespace ThisWarOfMine.Domain.Narrative.Options;
+
+public sealed class RedirectOption : Option
 {
-    public sealed class RedirectOption : Option
+    private static readonly ImmutableSortedDictionary<Language, string> Map = new SortedDictionary<Language, string>
     {
-        private static readonly ImmutableSortedDictionary<Language, string> Map = new SortedDictionary<Language, string>
-        {
-            { Language.English, "see" },
-            { Language.Ukrainian, "див." },
-            { Language.Russian, "см." },
-        }.ToImmutableSortedDictionary();
+        { Language.English, "see" },
+        { Language.Ukrainian, "див." },
+        { Language.Russian, "см." },
+    }.ToImmutableSortedDictionary();
 
-        public int StoryNumber { get; init; }
+    public int StoryNumber { get; init; }
 
-        public override string Text => $"{Map.ValueRef(Group.Alternative.Translation.Language)} {StoryNumber}";
-        public override bool IsRedirecting => true;
+    public override string Text => $"{Map.ValueRef(Group.Alternative.Translation.Language)} {StoryNumber}";
+    public override bool IsRedirecting => true;
 
-        private RedirectOption(OptionGroup group, Guid guid)
-            : base(group, guid) { }
+    private RedirectOption(OptionGroup group, Guid guid)
+        : base(group, guid) { }
 
-        internal static RedirectOption Create(OptionGroup group, Guid guid, int storyNumber) =>
-            new(group, guid) { StoryNumber = storyNumber };
-    }
+    internal static RedirectOption Create(OptionGroup group, Guid guid, int storyNumber) =>
+        new(group, guid) { StoryNumber = storyNumber };
 }

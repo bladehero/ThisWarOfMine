@@ -1,7 +1,6 @@
-﻿namespace ThisWarOfMine.Common.Wrappers
+﻿namespace ThisWarOfMine.Common.Wrappers;
+
+internal sealed class GuidProvider : IGuidProvider
 {
-    internal sealed class GuidProvider : IGuidProvider
-    {
-        public Guid NewGuid() => Guid.NewGuid();
-    }
+    public Guid NewGuid() => Guid.NewGuid();
 }

@@ -1,9 +1,8 @@
 using ThisWarOfMine.Domain.Narrative;
 
-namespace ThisWarOfMine.Infrastructure.Books
+namespace ThisWarOfMine.Infrastructure.Books;
+
+internal interface IZipBookCreator
 {
-    internal interface IZipBookCreator
-    {
-        Task CreateAsync(string path, Book book);
-    }
+    Task CreateAsync(string path, Book book);
 }

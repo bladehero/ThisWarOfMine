@@ -1,10 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
 using ThisWarOfMine.Domain.Narrative;
 
-namespace ThisWarOfMine.Splitter
+namespace ThisWarOfMine.Splitter;
+
+public interface IStoryParser
 {
-    public interface IStoryParser
-    {
-        Result<Story> ParseIn(Book book, Language language, IReadOnlyCollection<string> rows);
-    }
+    Result<Story> ParseIn(Book book, Language language, IReadOnlyCollection<string> rows);
 }

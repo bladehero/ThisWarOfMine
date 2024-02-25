@@ -1,7 +1,6 @@
-﻿namespace ThisWarOfMine.Application.Telegram.Abstraction
+﻿namespace ThisWarOfMine.Application.Telegram.Abstraction;
+
+internal abstract class DefaultTelegramNotificationHandler<T> : BaseTelegramNotificationHandler<T>
 {
-    internal abstract class DefaultTelegramNotificationHandler<T> : BaseTelegramNotificationHandler<T>
-    {
-        public override Task<bool> CanHandleAsync(CancellationToken token) => Task.FromResult(true);
-    }
+    public override Task<bool> CanHandleAsync(CancellationToken token) => Task.FromResult(true);
 }
