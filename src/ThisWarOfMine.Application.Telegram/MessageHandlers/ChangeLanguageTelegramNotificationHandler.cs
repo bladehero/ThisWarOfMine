@@ -1,45 +1,31 @@
 ﻿using CSharpFunctionalExtensions;
 using Telegram.Bot;
+using ThisWarOfMine.Application.Telegram.Abstraction;
 using ThisWarOfMine.Application.Telegram.MessageHandlers.Core;
 using ThisWarOfMine.Application.Telegram.States;
 using ThisWarOfMine.Domain.Narrative;
 
 namespace ThisWarOfMine.Application.Telegram.MessageHandlers;
 
-internal sealed class ChangeLanguageTelegramNotificationHandler : TextCommandTelegramNotificationHandler
+internal sealed class ChangeLanguageTelegramNotificationHandler : TextCommandWithOptionsTelegramNotificationHandler
 {
     private const string NoTranslationForThisLanguage = nameof(NoTranslationForThisLanguage);
     private const string LanguageWasUpdated = nameof(LanguageWasUpdated);
     private readonly ITelegramSettingsState _telegramSettingsState;
-    private readonly IMessageResponseLocalizer _messageResponseLocalizer;
+    private readonly IResponseLocalizer _responseLocalizer;
 
     public ChangeLanguageTelegramNotificationHandler(
         ITelegramSettingsState telegramSettingsState,
-        IMessageResponseLocalizer messageResponseLocalizer
+        IResponseLocalizer responseLocalizer
     )
     {
         _telegramSettingsState = telegramSettingsState;
-        _messageResponseLocalizer = messageResponseLocalizer;
+        _responseLocalizer = responseLocalizer;
     }
 
     protected override string Command => "language";
 
-    public override async Task<bool> CanHandleAsync(CancellationToken token)
-    {
-        var cannotHandle = !await base.CanHandleAsync(token);
-        if (cannotHandle)
-        {
-            return false;
-        }
-
-        var optionsAreEmpty = CommandOptions?.Any() != true;
-        if (optionsAreEmpty)
-        {
-            return false;
-        }
-
-        return true;
-    }
+    protected override bool OptionsAreRequired => true;
 
     public override Task HandleAsync(CancellationToken token)
     {
@@ -47,16 +33,16 @@ internal sealed class ChangeLanguageTelegramNotificationHandler : TextCommandTel
         if (!canBeParsed)
         {
             return Client.SendTextMessageAsync(
-                Message.Chat.Id,
-                _messageResponseLocalizer.GetString(NoTranslationForThisLanguage),
+                Chat.Id,
+                _responseLocalizer.GetString(NoTranslationForThisLanguage),
                 cancellationToken: token
             );
         }
 
         _telegramSettingsState.Change(x => x.Language = language);
         return Client.SendTextMessageAsync(
-            Message.Chat.Id,
-            _messageResponseLocalizer.GetString(LanguageWasUpdated),
+            Chat.Id,
+            _responseLocalizer.GetString(LanguageWasUpdated),
             cancellationToken: token
         );
     }

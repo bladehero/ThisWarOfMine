@@ -27,7 +27,7 @@ internal sealed partial class BackToStoryOptionParsingStrategy : IOptionParsingS
             return Maybe.None;
         }
 
-        var number = int.Parse(match.Groups[Number].Value);
+        var number = short.Parse(match.Groups[Number].Value);
         return new RedirectionOptionData(_guidProvider.NewGuid(), order, number, "Вернитесь назад");
     }
 

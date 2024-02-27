@@ -28,11 +28,22 @@ internal sealed class TelegramUpdateHandler : IUpdateHandler
         _logger = logger;
     }
 
-    public Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+    public async Task HandleUpdateAsync(
+        ITelegramBotClient botClient,
+        Update update,
+        CancellationToken cancellationToken
+    )
     {
         _telegramChatAccessor.Initialize(update);
         var notification = _notificationCreator.CreateFrom(update);
-        return _mediator.Publish(notification, cancellationToken);
+        try
+        {
+            await _mediator.Publish(notification, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Exception occured while handling update");
+        }
     }
 
     public Task HandlePollingErrorAsync(

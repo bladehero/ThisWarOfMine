@@ -27,4 +27,16 @@
     <data name="LanguageWasUpdated" xml:space="preserve">
         <value>Language was updated</value>
     </data>
+    <data name="NotValidStoryNumber" xml:space="preserve">
+        <value>The story number is invalid or has an incorrect format</value>
+    </data>
+    <data name="StoryNotFound" xml:space="preserve">
+        <value>The story is not found</value>
+    </data>
+    <data name="OptionsHeader" xml:space="preserve">
+        <value>Options</value>
+    </data>
+    <data name="BackToGame" xml:space="preserve">
+        <value>Back to game</value>
+    </data>
 </root>

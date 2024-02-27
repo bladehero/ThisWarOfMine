@@ -1,19 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ThisWarOfMine.Common;
 using ThisWarOfMine.Common.Wrappers;
+using ThisWarOfMine.Domain;
 using ThisWarOfMine.Domain.Narrative;
-using ThisWarOfMine.Infrastructure;
 using ThisWarOfMine.Infrastructure.Books;
 using ThisWarOfMine.Splitter;
 
-var assemblies = AssemblyHelper.LoadAssemblies<Program>("ThisWarOfMine");
 var longWriteOperationAccessor = new LongWriteOperationSingleBookAccessor();
 var strategy = new NoDisposeBookAccessingStrategy(longWriteOperationAccessor);
 var builder = Host.CreateApplicationBuilder(args);
 builder
     .Services.AddCommonWrappers()
-    .AddBookInfrastructure(builder.Configuration, assemblies)
+    .AddBookInfrastructure(builder.Configuration)
     .ConfigureBookAccessor(x => x.AccessingStrategy = strategy)
     .AddSplitter();
 using var host = builder.Build();

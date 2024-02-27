@@ -20,4 +20,16 @@
     <data name="LanguageWasUpdated" xml:space="preserve">
         <value>Язык обновлен</value>
     </data>
+    <data name="NotValidStoryNumber" xml:space="preserve">
+        <value>Номер истории недействителен или имеет неправильный формат</value>
+    </data>
+    <data name="StoryNotFound" xml:space="preserve">
+        <value>История не найдена</value>
+    </data>
+    <data name="OptionsHeader" xml:space="preserve">
+        <value>Варианты</value>
+    </data>
+    <data name="BackToGame" xml:space="preserve">
+        <value>Назад в игру</value>
+    </data>
 </root>

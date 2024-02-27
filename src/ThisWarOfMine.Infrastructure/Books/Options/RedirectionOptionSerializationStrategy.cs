@@ -45,7 +45,7 @@ internal sealed partial class RedirectionOptionSerializationStrategy
         var storyNumber = match.Groups[StoryNumber].Value;
         var appendix = match.Groups[Appendix].Value;
 
-        return new RedirectionOptionData(guid, order, int.Parse(storyNumber), text, appendix);
+        return new RedirectionOptionData(guid, order, short.Parse(storyNumber), text, appendix);
     }
 
     [GeneratedRegex($"(-- (?<{Text}>.*))?(\\s*-> (?<{StoryNumber}>\\d*\\s*))(... (?<{Appendix}>.*))?\\s*")]

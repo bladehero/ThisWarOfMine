@@ -3,7 +3,7 @@
 public sealed record RedirectionOptionData(
     Guid Id,
     int Order,
-    int StoryNumber,
+    short StoryNumber,
     string? Text = null,
     string? Appendix = null
 ) : IOptionData;
