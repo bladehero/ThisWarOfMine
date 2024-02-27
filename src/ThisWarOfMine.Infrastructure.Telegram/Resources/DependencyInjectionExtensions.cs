@@ -3,10 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Localization;
 using ThisWarOfMine.Application.Telegram;
-using ThisWarOfMine.Application.Telegram.States;
 using ThisWarOfMine.Common;
 using ThisWarOfMine.Infrastructure.Telegram.Resources.Core;
-using ThisWarOfMine.Infrastructure.Telegram.States;
 
 namespace ThisWarOfMine.Infrastructure.Telegram.Resources;
 

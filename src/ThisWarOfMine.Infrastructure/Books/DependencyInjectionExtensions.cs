@@ -9,20 +9,22 @@ namespace ThisWarOfMine.Infrastructure.Books;
 
 public static class DependencyInjectionExtensions
 {
+    private static readonly Assembly ThisAssembly = typeof(DependencyInjectionExtensions).Assembly;
+
     public static IServiceCollection AddBookInfrastructure(
         this IServiceCollection services,
-        IConfiguration configuration,
-        Assembly[] assemblies
+        IConfiguration configuration
     ) =>
         services
             .AddScoped<IBookRepository, BookZipArchiveRepository>()
+            .Decorate<IBookRepository, BookInMemoryCachedRepository>()
             .AddScoped<IBookNameResolver, BookNameResolver>()
             .AddScoped<IZipBookCreator, ZipBookCreator>()
             .AddScoped<IOptionDataSerializer, OptionDataSerializer>()
-            .AddAll<IOptionSerializationStrategy>(assemblies)
+            .AddAll<IOptionSerializationStrategy>(new[] { ThisAssembly }, ServiceLifetime.Transient)
             .AddBookAccessor()
             .AddBookConfiguration(configuration)
-            .AddMediatR(x => x.RegisterServicesFromAssemblies(assemblies));
+            .AddMediatR(x => x.RegisterServicesFromAssembly(ThisAssembly));
 
     public static IServiceCollection ConfigureBookAccessor(
         this IServiceCollection services,

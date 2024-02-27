@@ -12,7 +12,6 @@ public sealed class BackToGameOption : Option
     }.ToImmutableSortedDictionary();
 
     public override string Text => Map.ValueRef(Group.Alternative.Translation.Language);
-    public override bool IsRedirecting => false;
 
     private BackToGameOption(OptionGroup group, Guid guid)
         : base(group, guid) { }

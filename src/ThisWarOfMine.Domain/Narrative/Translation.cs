@@ -27,6 +27,27 @@ public sealed class Translation : Abstraction.Entity<Language>
                 Error.Because($"Not defined alternative `{guid}` for translation: `{Language}` for story: {Story.Id}")
             );
 
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="randomIndexSelector">Function where: first parameter is maximum value of index excluded, returns randomly selected index</param>
+    /// <returns></returns>
+    public Result<Alternative, Error> Random(Func<int, int> randomIndexSelector)
+    {
+        if (!_alternatives.Any())
+        {
+            return Error.Because("No alternatives defined yet");
+        }
+
+        var index = randomIndexSelector(_alternatives.Count);
+        if (index < 0 || index >= _alternatives.Count)
+        {
+            return Error.Because("Index out of bound");
+        }
+
+        return _alternatives[index];
+    }
+
     internal static Translation Create(Story story, Language language) => new(story) { Id = language };
 
     #region Event Handling

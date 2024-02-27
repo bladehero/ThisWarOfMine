@@ -1,4 +1,4 @@
-﻿namespace ThisWarOfMine.Infrastructure;
+﻿namespace ThisWarOfMine.Domain;
 
 public static class Constants
 {

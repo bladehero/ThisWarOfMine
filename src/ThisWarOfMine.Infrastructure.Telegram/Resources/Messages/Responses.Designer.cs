@@ -60,6 +60,15 @@ namespace ThisWarOfMine.Infrastructure.Telegram.Resources.Messages {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back to game.
+        /// </summary>
+        internal static string BackToGame {
+            get {
+                return ResourceManager.GetString("BackToGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language was updated.
         /// </summary>
         internal static string LanguageWasUpdated {
@@ -83,6 +92,33 @@ namespace ThisWarOfMine.Infrastructure.Telegram.Resources.Messages {
         internal static string NotRecognizedMessageCommand {
             get {
                 return ResourceManager.GetString("NotRecognizedMessageCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The story number is invalid or has an incorrect format.
+        /// </summary>
+        internal static string NotValidStoryNumber {
+            get {
+                return ResourceManager.GetString("NotValidStoryNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options.
+        /// </summary>
+        internal static string OptionsHeader {
+            get {
+                return ResourceManager.GetString("OptionsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The story is not found.
+        /// </summary>
+        internal static string StoryNotFound {
+            get {
+                return ResourceManager.GetString("StoryNotFound", resourceCulture);
             }
         }
     }

@@ -28,12 +28,12 @@ internal sealed partial class RedirectOptionParsingStrategy : IOptionParsingStra
             return Maybe.None;
         }
 
-        var number = match.Groups.TryFind(Number).Map(AsInteger).GetValueOrThrow(RedirectionNumberMandatoryError);
+        var number = match.Groups.TryFind(Number).Map(AsShort).GetValueOrThrow(RedirectionNumberMandatoryError);
         var prepending = match.Groups.TryFind(Prepending).Map(AsString).GetValueOrDefault();
         var appending = match.Groups.TryFind(Appending).Map(AsString).GetValueOrDefault();
         return new RedirectionOptionData(_guidProvider.NewGuid(), order, number, prepending, appending);
 
-        int AsInteger(Capture group) => int.Parse(group.Value);
+        short AsShort(Capture group) => short.Parse(group.Value);
 
         string? AsString(Capture group) => group.Value.Trim();
     }

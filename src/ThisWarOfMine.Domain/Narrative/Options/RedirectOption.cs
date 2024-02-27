@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using CSharpFunctionalExtensions;
 
 namespace ThisWarOfMine.Domain.Narrative.Options;
 
@@ -11,14 +12,18 @@ public sealed class RedirectOption : Option
         { Language.Russian, "см." },
     }.ToImmutableSortedDictionary();
 
-    public int StoryNumber { get; init; }
+    private readonly short _storyNumber;
 
-    public override string Text => $"{Map.ValueRef(Group.Alternative.Translation.Language)} {StoryNumber}";
-    public override bool IsRedirecting => true;
+    public override Maybe<short> GetRedirectionStoryNumber() => _storyNumber;
 
-    private RedirectOption(OptionGroup group, Guid guid)
-        : base(group, guid) { }
+    public override string Text => $"{Map.ValueRef(Group.Alternative.Translation.Language)} {_storyNumber}";
 
-    internal static RedirectOption Create(OptionGroup group, Guid guid, int storyNumber) =>
-        new(group, guid) { StoryNumber = storyNumber };
+    private RedirectOption(OptionGroup group, Guid guid, short storyNumber)
+        : base(group, guid)
+    {
+        _storyNumber = storyNumber;
+    }
+
+    internal static RedirectOption Create(OptionGroup group, Guid guid, short storyNumber) =>
+        new(group, guid, storyNumber);
 }

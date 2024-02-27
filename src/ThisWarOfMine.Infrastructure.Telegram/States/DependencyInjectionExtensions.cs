@@ -9,6 +9,7 @@ public static class DependencyInjectionExtensions
     {
         return services
             .AddScoped<ITelegramSettingsState, TelegramSettingsState>()
-            .AddScoped<ITelegramChatAccessor, TelegramChatAccessor>();
+            .AddScoped<ITelegramChatAccessor, TelegramChatAccessor>()
+            .AddScoped<IRandomAlternativePicker, RandomAlternativePicker>();
     }
 }

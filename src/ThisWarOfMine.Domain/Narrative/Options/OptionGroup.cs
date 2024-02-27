@@ -4,7 +4,7 @@ using ThisWarOfMine.Domain.Abstraction;
 
 namespace ThisWarOfMine.Domain.Narrative.Options;
 
-public sealed class OptionGroup : Entity<Unit>, IReadOnlyCollection<Option>
+public sealed class OptionGroup : Entity<Unit>, IReadOnlyList<Option>
 {
     private readonly List<Option> _options = new();
 
@@ -16,6 +16,8 @@ public sealed class OptionGroup : Entity<Unit>, IReadOnlyCollection<Option>
     {
         Alternative = alternative;
     }
+
+    public Option this[int order] => _options[order];
 
     internal Option Note(Guid guid, string remark)
     {
@@ -55,7 +57,7 @@ public sealed class OptionGroup : Entity<Unit>, IReadOnlyCollection<Option>
         }
     }
 
-    internal Option AppendWithRedirection(Guid guid, string? text, int storyNumber, string? appendix)
+    internal Option AppendWithRedirection(Guid guid, string? text, short storyNumber, string? appendix)
     {
         ThrowIfBackToGameExists();
 

@@ -9,11 +9,17 @@ internal abstract class TextCommandTelegramNotificationHandler : BaseTelegramNot
 {
     private const int StartingOffset = 0;
     protected Message Message => Payload;
-    protected string[]? CommandOptions { get; private set; }
+    protected Chat Chat => Payload.Chat;
+    protected MessageEntity? CommandEntity { get; private set; }
     protected abstract string Command { get; }
 
     public override Task<bool> CanHandleAsync(CancellationToken token)
     {
+        if (Message.Type is not MessageType.Text)
+        {
+            return Task.FromResult(false);
+        }
+
         if (Message.Entities is null)
         {
             return Task.FromResult(false);
@@ -27,16 +33,9 @@ internal abstract class TextCommandTelegramNotificationHandler : BaseTelegramNot
             return Task.FromResult(false);
         }
 
+        CommandEntity = entity;
         var text = Message.Text!.Substring(entity.Offset, entity.Length);
-        if (!CommandIsValid(text))
-        {
-            return Task.FromResult(false);
-        }
-
-        CommandOptions = Message
-            .Text[entity.Length..]
-            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        return Task.FromResult(true);
+        return Task.FromResult(CommandIsValid(text));
     }
 
     private bool CommandIsValid(string text) => $"/{Command}".Equals(text, StringComparison.OrdinalIgnoreCase);

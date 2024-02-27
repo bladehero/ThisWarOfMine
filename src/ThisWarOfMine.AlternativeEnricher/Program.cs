@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Hosting;
 using ThisWarOfMine.Common;
 using ThisWarOfMine.Common.Wrappers;
+using ThisWarOfMine.Domain;
 using ThisWarOfMine.Domain.Narrative;
-using ThisWarOfMine.Infrastructure;
 using ThisWarOfMine.Infrastructure.Books;
 using ThisWarOfMine.Infrastructure.ChatGpt;
 
@@ -12,7 +12,7 @@ var builder = Host.CreateApplicationBuilder(args);
 builder
     .Services.AddCommonWrappers()
     .AddChatGptInfrastructure(builder.Configuration)
-    .AddBookInfrastructure(builder.Configuration, assemblies);
+    .AddBookInfrastructure(builder.Configuration);
 using var host = builder.Build();
 
 await host.StartAsync();
